@@ -19,9 +19,8 @@ public class BeamerSettingService {
     @Autowired
     AppPrincipalFrame appPrincipalFrame;
 
-    @RequestMapping(value="/{title}", method= RequestMethod.GET)
-    public void createConnection(@PathVariable String title) {
-        appPrincipalFrame.setTitleTestMethod(title);
-        System.out.println(appPrincipalFrame.getTitle());
+    @RequestMapping(value="/{strTitle}/{strColor}", method= RequestMethod.GET)
+    public void createConnection(@PathVariable String strTitle, @PathVariable String strColor) {
+        appPrincipalFrame.setTestMethod(strTitle, strColor);
     }
 }
