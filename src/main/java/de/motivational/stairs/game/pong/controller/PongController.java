@@ -1,5 +1,7 @@
 package de.motivational.stairs.game.pong.controller;
 
+import de.motivational.stairs.game.pong.model.Ball;
+import de.motivational.stairs.game.pong.model.Paddle;
 import de.motivational.stairs.game.pong.model.PongModel;
 import de.motivational.stairs.game.pong.view.PongView;
 
@@ -31,20 +33,35 @@ public class PongController {
     }
 
     public void update(float elapsedTime) {
-        pongModel.getBall().setPosX(pongModel.getBall().getPosX()+pongModel.getBall().getVelocityX() * elapsedTime);
-        pongModel.getBall().setPosY(pongModel.getBall().getPosY()+pongModel.getBall().getVelocityY() * elapsedTime);
-        if (pongModel.getBall().getPosX() > pongModel.getWidth() - pongModel.getBall().getRadius()) {
-            pongModel.getBall().setVelocityX(pongModel.getBall().getVelocityX()*-1);
-        }
-        if (pongModel.getBall().getPosX() < pongModel.getBall().getRadius()) {
-            pongModel.getBall().setVelocityX(pongModel.getBall().getVelocityX()*-1);
-        }
+        //TODO BACKTRACK LOGIC!!
+        Ball b = pongModel.getBall();
 
-        if (pongModel.getBall().getPosY() > pongModel.getHeight() - pongModel.getBall().getRadius()) {
-            pongModel.getBall().setVelocityY(pongModel.getBall().getVelocityY()*-1);
+        b.setPosX(b.getPosX()+b.getVelocityX() * elapsedTime);
+        b.setPosY(b.getPosY()+b.getVelocityY() * elapsedTime);
+        if(b.getPosX()<=pongModel.getPaddleLeft().getPosX()+pongModel.getPaddleLeft().getWidth()+b.getRadius()
+                && (pongModel.getPaddleLeft().getPosY()<=b.getPosY()
+                    && b.getPosY()<=pongModel.getPaddleLeft().getPosY()+pongModel.getPaddleLeft().getHeight())){
+            b.setVelocityX(b.getVelocityX()*-1);
+        } else if(b.getPosX()>=pongModel.getPaddleRight().getPosX()-pongModel.getPaddleRight().getWidth()+b.getRadius()
+                && (pongModel.getPaddleRight().getPosY()<=b.getPosY()
+                && b.getPosY()<=pongModel.getPaddleRight().getPosY()+pongModel.getPaddleRight().getHeight())){
+            b.setVelocityX(b.getVelocityX()*-1);
+        } else if (b.getPosX() >= pongModel.getWidth() - b.getRadius()) {
+            b.setVelocityX(b.getVelocityX()*-1);
+        } else if (b.getPosX() <= b.getRadius()) {
+            b.setVelocityX(b.getVelocityX()*-1);
+        } else if (b.getPosY() >= pongModel.getHeight() - b.getRadius()) {
+            b.setVelocityY(b.getVelocityY()*-1);
+        } else if (b.getPosY() <= b.getRadius()) {
+            b.setVelocityY(b.getVelocityY()*-1);
         }
-        if (pongModel.getBall().getPosY() < pongModel.getBall().getRadius()) {
-            pongModel.getBall().setVelocityY(pongModel.getBall().getVelocityY()*-1);
-        }
+    }
+
+    public void movePaddleUp(Paddle paddle){
+        pongModel.setPaddlePosY(paddle, paddle.getPosY()-pongModel.getHeight()/50);
+    }
+
+    public void movePaddleDown(Paddle paddle){
+        pongModel.setPaddlePosY(paddle, paddle.getPosY()+pongModel.getHeight()/50);
     }
 }

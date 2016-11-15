@@ -11,7 +11,7 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
+//apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
 jar {
@@ -33,7 +33,10 @@ dependencies {
 	//compile("mysql:mysql-connector-java:5.1.6")
 
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.boot:spring-boot-starter-websocket')
+	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 
-	testCompile('org.springframework.boot:spring-boot-starter-examples')
+	compile("org.springframework.boot:spring-boot-devtools")
+	//compile('org.springframework.boot:spring-boot-starter-websocket')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

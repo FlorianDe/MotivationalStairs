@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value="/beamer")
+@RequestMapping(value="/api/beamer")
 public class BeamerSettingService {
 
     @Autowired
@@ -21,6 +21,6 @@ public class BeamerSettingService {
 
     @RequestMapping(value="/{strTitle}/{strColor}", method= RequestMethod.GET)
     public void createConnection(@PathVariable String strTitle, @PathVariable String strColor) {
-        appPrincipalFrame.setTestMethod(strTitle, strColor);
+        //appPrincipalFrame.setTestMethod(strTitle, strColor);
     }
 }

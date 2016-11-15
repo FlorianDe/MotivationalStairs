@@ -16,6 +16,10 @@ public class PongGame extends GameTimeStep{
     private PongView pongView;
     private IBeamerFrame gameFrame;
 
+    public PongController getPongController() {
+        return pongController;
+    }
+
     public PongGame(){
         this.pongModel = new PongModel(800,600);
         this.pongController = new PongController(this.pongModel);

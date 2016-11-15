@@ -2,6 +2,7 @@ package de.motivational.stairs.game.pong.view;
 
 import de.motivational.stairs.game.pong.controller.PongController;
 import de.motivational.stairs.game.pong.model.Ball;
+import de.motivational.stairs.game.pong.model.Paddle;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -33,14 +34,20 @@ public class PongView {
     public void render(float interpolationTime){
         Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
         Ball ball = pongController.getPongModel().getBall();
+        Paddle pl = pongController.getPongModel().getPaddleLeft();
+        Paddle pr = pongController.getPongModel().getPaddleRight();
         g2d.clearRect(0,0,bufferedImage.getWidth(),bufferedImage.getHeight());
 
         //NOT INTERPOLATED
         g2d.setColor(Color.RED);
-        g2d.drawOval((int) (ball.getPosX() - ball.getRadius()), (int) (ball.getPosY() -  ball.getRadius()), (int)  ball.getRadius() * 2, (int)  ball.getRadius() * 2);
+        g2d.fillOval((int) (ball.getPosX() - ball.getRadius()), (int) (ball.getPosY() -  ball.getRadius()), (int)  ball.getRadius() * 2, (int)  ball.getRadius() * 2);
         //INTERPOLATED!!!
         g2d.setColor(Color.WHITE);
         g2d.drawOval((int) (ball.getPosX() -  ball.getRadius() + interpolationTime * ball.getVelocityX()), (int) (ball.getPosY() -  ball.getRadius() + interpolationTime * ball.getVelocityY()), (int)  ball.getRadius() * 2, (int)  ball.getRadius() * 2);
+
+        g2d.drawRect((int)pl.getPosX(),(int)pl.getPosY(),(int)pl.getWidth(),(int)pl.getHeight());
+        g2d.drawRect((int)pr.getPosX(),(int)pr.getPosY(),(int)pr.getWidth(),(int)pr.getHeight());
+
 
         g2d.dispose();
 

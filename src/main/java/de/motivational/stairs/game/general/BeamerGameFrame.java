@@ -26,4 +26,8 @@ public class BeamerGameFrame extends JFrame implements IBeamerFrame{
         g2d.drawImage(bufferedImage,0,0,bufferedImage.getWidth(),bufferedImage.getHeight(), null);
         g2d.dispose();
     }
+
+    public JPanel getCanvas() {
+        return canvas;
+    }
 }
