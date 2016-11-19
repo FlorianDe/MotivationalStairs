@@ -22,6 +22,8 @@ public class AppPrincipalFrame{
     PongGame pongGame;
 
     public AppPrincipalFrame() {
+        // TODO this causes a startup fail when debugging via remote
+
         beamerFrame = new BeamerGameFrame(800,600);
         pongGame = new PongGame();
         pongGame.setGameFrame(beamerFrame);
@@ -39,6 +41,7 @@ public class AppPrincipalFrame{
         beamerFrame.getCanvas().getActionMap().put(PR_MOV_DOWN, new MoveAction(pongGame.getPongController().getPongModel().getPaddleRight(),-1));
 
         pongGame.start();
+
     }
 
     public String setTestMethod(String strTitle, String strColor){
