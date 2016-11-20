@@ -110,6 +110,8 @@ public class OffsetEntity {
         return offsetId;
     }
 
+    // TODO warum is das genau hier? Sieht mir aus als würde es alle beamer setups für eine offset_id zurückgeben, brauchen wir eig nicht
+
     @OneToMany(mappedBy = "offsetByStairsOffsetId")
     public Collection<BeamerSetupEntity> getBeamerSetupsByOffsetId() {
         return beamerSetupsByOffsetId;

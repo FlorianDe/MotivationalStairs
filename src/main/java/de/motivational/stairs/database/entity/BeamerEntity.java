@@ -16,7 +16,7 @@ import java.util.Collection;
 public class BeamerEntity {
     private int beamerId;
     private String beamerName;
-    private double angle;
+    private float angle;
     private int width;
     private int height;
     private Collection<BeamerSetupEntity> beamerSetupsByBeamerId;
@@ -43,11 +43,11 @@ public class BeamerEntity {
 
     @Basic
     @Column(name = "angle")
-    public double getAngle() {
+    public float getAngle() {
         return angle;
     }
 
-    public void setAngle(double angle) {
+    public void setAngle(float angle) {
         this.angle = angle;
     }
 
