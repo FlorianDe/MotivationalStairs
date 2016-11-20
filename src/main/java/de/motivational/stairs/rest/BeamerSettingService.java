@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 
 @RestController
-@RequestMapping(value="/api/beamer")
+@RequestMapping(value="/api/v1.0/beamer")
 public class BeamerSettingService {
 
     @Autowired

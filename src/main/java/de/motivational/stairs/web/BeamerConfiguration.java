@@ -10,18 +10,12 @@ import org.springframework.web.servlet.ModelAndView;
  * Created by Florian on 15.11.2016.
  */
 @Controller
-@RequestMapping(value="/settings")
+@RequestMapping(value="/")
 public class BeamerConfiguration {
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
-        ModelAndView mav = new ModelAndView("index");
-        System.out.println("INDEX CALL " + mav);
-        return mav;
+        return new ModelAndView("templateHier");
     }
 
-    @RequestMapping(value = "/1/", method = RequestMethod.GET)
-    public String index1() {
-        System.out.println("INDEX CALL 1");
-        return "index.html";
-    }
 }
