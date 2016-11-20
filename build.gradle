@@ -31,16 +31,18 @@ repositories {
 
 
 dependencies {
-	//
-	//compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	//mysql support
-	//compile("mysql:mysql-connector-java:5.1.6")
-
 	compile('org.springframework.boot:spring-boot-starter-web')
-	//compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+	//jpa + hibernate support
+	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+	//mysql support
+	compile("mysql:mysql-connector-java:5.1.6")
 
-	compile("org.springframework.boot:spring-boot-devtools")
+	//thymeleaf templating engine
+	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 	//compile('org.springframework.boot:spring-boot-starter-websocket')
 
-	//testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile("org.springframework.boot:spring-boot-devtools")
+
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

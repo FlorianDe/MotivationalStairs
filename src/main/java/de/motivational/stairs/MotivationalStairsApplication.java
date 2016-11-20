@@ -27,6 +27,7 @@ public class MotivationalStairsApplication  extends WebMvcAutoConfiguration {
 				.run(args);
 		//SpringApplication.run(MotivationalStairsApplication.class, args);
 	}
+
 /*
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
@@ -34,10 +35,10 @@ public class MotivationalStairsApplication  extends WebMvcAutoConfiguration {
 	}
 */
 
-	/*
+/*
 	@Bean
 	public AppPrincipalFrame appPrincipalFrame() {
 		return new AppPrincipalFrame();
 	}
-	*/
+*/
 }

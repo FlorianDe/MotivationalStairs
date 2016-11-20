@@ -22,6 +22,6 @@ public class BeamerConfiguration {
     @RequestMapping(value = "/1/", method = RequestMethod.GET)
     public String index1() {
         System.out.println("INDEX CALL 1");
-        return "index";
+        return "index.html";
     }
 }
