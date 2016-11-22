@@ -19,6 +19,10 @@ public class BeamerSetupDto {
     @JsonProperty("stairs")
     private StairsDto stairs;
 
+    public BeamerSetupDto(){
+
+    }
+
     public BeamerSetupDto(BeamerSetupEntity bse){
         this.setupId = bse.getSetupId();
         this.setupName = bse.getSetupName();

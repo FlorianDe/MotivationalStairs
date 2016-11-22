@@ -28,6 +28,9 @@ public class OffsetDto {
     @JsonProperty("roll")
     private int roll;
 
+    public OffsetDto(){
+
+    }
 
     public OffsetDto(OffsetEntity oe) {
         this.offsetId = oe.getOffsetId();

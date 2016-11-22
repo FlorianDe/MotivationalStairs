@@ -26,6 +26,18 @@ public class BeamerDto {
     @JsonProperty("offset")
     private OffsetDto beamerOffset;
 
+    public BeamerDto(){
+
+    }
+
+    public BeamerDto(BeamerEntity be) {
+        this.beamerId = be.getBeamerId();
+        this.beamerName = be.getBeamerName();
+        this.angle = be.getAngle();
+        this.width = be.getWidth();
+        this.height = be.getHeight();
+    }
+
     public BeamerDto(BeamerEntity be, OffsetEntity oe) {
         this.beamerId = be.getBeamerId();
         this.beamerName = be.getBeamerName();

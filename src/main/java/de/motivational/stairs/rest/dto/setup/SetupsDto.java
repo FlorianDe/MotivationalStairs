@@ -10,6 +10,8 @@ public class SetupsDto {
     @JsonProperty("setups")
     BeamerSetupDto[] setups;
 
+    public SetupsDto(){}
+
     public SetupsDto(BeamerSetupDto[] setups) {
         this.setups = setups;
     }

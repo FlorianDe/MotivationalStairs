@@ -1,5 +1,6 @@
 package de.motivational.stairs.game.pong.controller;
 
+import de.motivational.stairs.game.general.timestep.GameTimeStepController;
 import de.motivational.stairs.game.pong.model.Ball;
 import de.motivational.stairs.game.pong.model.Paddle;
 import de.motivational.stairs.game.pong.model.PongModel;
@@ -8,11 +9,12 @@ import de.motivational.stairs.game.pong.view.PongView;
 /**
  * Created by Florian on 13.11.2016.
  */
-public class PongController {
+public class PongController extends GameTimeStepController {
     PongModel pongModel;
     PongView pongView;
 
     public PongController(PongModel pongModel){
+        super();
         this.pongModel = pongModel;
     }
 

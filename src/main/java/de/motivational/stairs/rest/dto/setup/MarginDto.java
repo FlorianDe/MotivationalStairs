@@ -19,6 +19,8 @@ public class MarginDto {
     @JsonProperty("bottom")
     private int bottom;
 
+    public MarginDto(){}
+
     public MarginDto(int left, int right, int top, int bottom) {
         this.left = left;
         this.right = right;

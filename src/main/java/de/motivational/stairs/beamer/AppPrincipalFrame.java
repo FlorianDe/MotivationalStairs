@@ -1,11 +1,8 @@
 package de.motivational.stairs.beamer;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import de.motivational.stairs.game.general.BeamerGameFrame;
-import de.motivational.stairs.game.general.IBeamerFrame;
 import de.motivational.stairs.game.pong.PongGame;
 import de.motivational.stairs.game.pong.model.Paddle;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -22,7 +19,7 @@ public class AppPrincipalFrame{
     PongGame pongGame;
 
     public AppPrincipalFrame() {
-        //init();
+        init();
     }
 
     private void init(){

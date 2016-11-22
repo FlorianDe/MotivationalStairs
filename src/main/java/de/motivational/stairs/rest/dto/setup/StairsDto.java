@@ -32,6 +32,23 @@ public class StairsDto {
     @JsonProperty("offset")
     private OffsetDto stairsOffset;
 
+    public StairsDto(){}
+
+    public StairsDto(StairsEntity se) {
+        this.stairsId = se.getStairsId();
+        this.stairsName = se.getStairsName();
+        this.stepsCount = se.getStepsCount();
+        this.stepWidth = se.getStepWidth();
+        this.stepDepth = se.getStepDepth();
+        this.stepHeight = se.getStepHeight();
+
+        this.margin = new MarginDto(
+                se.getMarginLeft(),
+                se.getMarginRight(),
+                se.getMarginTop(),
+                se.getMarginBottom());
+    }
+
     public StairsDto(StairsEntity se, OffsetEntity oe) {
         this.stairsId = se.getStairsId();
         this.stairsName = se.getStairsName();

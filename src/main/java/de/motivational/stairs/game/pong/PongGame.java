@@ -1,6 +1,5 @@
 package de.motivational.stairs.game.pong;
 
-import de.motivational.stairs.game.general.BeamerGameFrame;
 import de.motivational.stairs.game.general.IBeamerFrame;
 import de.motivational.stairs.game.general.timestep.GameTimeStep;
 import de.motivational.stairs.game.pong.controller.PongController;
