@@ -1,5 +1,7 @@
 package de.motivational.stairs.game.general;
 
+import de.motivational.stairs.game.general.IBeamerFrame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -7,7 +9,7 @@ import java.awt.image.BufferedImage;
 /**
  * Created by Florian on 13.11.2016.
  */
-public class BeamerGameFrame extends JFrame implements IBeamerFrame{
+public class BeamerGameFrame extends JFrame implements IBeamerFrame {
     JPanel canvas;
 
     public BeamerGameFrame(int width, int height){

@@ -27,6 +27,10 @@ targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+
+	flatDir {
+		dirs 'libs'
+	}
 }
 
 
@@ -51,8 +55,9 @@ dependencies {
 	//testCompile('org.springframework.boot:spring-boot-starter-test')
 
 	// JOGL / Java OPEN GL
-	compile "org.jogamp.gluegen:gluegen-rt:2.3.1"
-	compile "org.jogamp.jogl:jogl-all:2.3.1"
+	compile "org.jogamp.gluegen:gluegen-rt:2.3.2"
+	compile "org.jogamp.jogl:jogl-all:2.3.2"
+	compile 'com.hackoeur:jglm:1.0.0'
 
 	runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-amd64"
 	runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6"
