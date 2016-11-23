@@ -38,9 +38,7 @@ public class BeamerSetupServiceREST {
 
     @RequestMapping(value="/", method= RequestMethod.POST)
     @ResponseBody boolean create(@RequestBody BeamerSetupDto beamerSetupDto) {
-        //TODO @VIKTOR NOT POSSIBLE WITH BEAMERID AND STAIRSID ONLY
-        //return beamerSetupService.create(beamerSetupDto);
-        throw new NotImplementedException();
+        return beamerSetupService.create(beamerSetupDto);
     }
 
     @RequestMapping(value="/{beamerSetupId}", method= RequestMethod.DELETE)

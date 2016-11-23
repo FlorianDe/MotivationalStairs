@@ -26,6 +26,7 @@ public class OffsetEntity {
 
     @Id
     @Column(name = "offset_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public int getOffsetId() {
         return offsetId;
     }
@@ -102,7 +103,6 @@ public class OffsetEntity {
         OffsetEntity that = (OffsetEntity) o;
 
         return offsetId == that.offsetId;
-
     }
 
     @Override
