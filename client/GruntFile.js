@@ -6,9 +6,9 @@ module.exports  = function(grunt) {
 
             },
             react: {
-                cmd: "npm",
+                cmd: "node",
                 args: [
-                    'run',
+                    'node_modules/react-scripts/bin/react-scripts.js',
                     'build'
                 ]
             }

@@ -19,20 +19,9 @@ public class MotivationalStairsApplication  extends WebMvcAutoConfiguration {
 				.headless(false)
 				.web(true)
 				.run(args);
+
+
 		//SpringApplication.run(MotivationalStairsApplication.class, args);
 	}
 
-/*
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-		return builder.sources(MotivationalStairsApplication.class);
-	}
-*/
-
-/*
-	@Bean
-	public AppPrincipalFrame appPrincipalFrame() {
-		return new AppPrincipalFrame();
-	}
-*/
 }

@@ -1,5 +1,5 @@
 package de.motivational.stairs;
-
+/*
 import de.motivational.stairs.database.entity.BeamerSetupEntity;
 import de.motivational.stairs.database.repository.BeamerSetupService;
 import org.junit.Test;
@@ -26,3 +26,4 @@ public class MotivationalStairsApplicationTests {
 	}
 
 }
+*/

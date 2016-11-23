@@ -48,5 +48,23 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-devtools")
 
 
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	//testCompile('org.springframework.boot:spring-boot-starter-test')
+
+	// JOGL / Java OPEN GL
+	compile "org.jogamp.gluegen:gluegen-rt:2.3.1"
+	compile "org.jogamp.jogl:jogl-all:2.3.1"
+
+	runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-amd64"
+	runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6"
+	runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6hf"
+	runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-macosx-universal"
+	runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-windows-amd64"
+	runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-windows-i586"
+
+	runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-amd64"
+	runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-armv6"
+	runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-armv6hf"
+	runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-macosx-universal"
+	runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-windows-amd64"
+	runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-windows-i586"
 }
