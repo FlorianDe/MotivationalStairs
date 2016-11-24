@@ -25,13 +25,15 @@ public class AppPrincipalFrame{
     StairsTransformFrame transformFrame;
 
 
+    @Autowired
     BeamerSetupService beamerSetupService;
 
-
-    @Autowired
-    public AppPrincipalFrame(BeamerSetupService beamerSetupService) {
+    public AppPrincipalFrame() {
         // TODO remove - only for testing!
-        this.beamerSetupService = beamerSetupService;
+
+    }
+
+    public void startFrame() {
         initGL();
         init();
     }

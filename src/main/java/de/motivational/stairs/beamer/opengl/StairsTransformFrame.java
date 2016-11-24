@@ -94,7 +94,7 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         if(!this.glInitialized) {
             this.logger.info("Initializing OpenGL Context");
             // get GL profile
-            GLProfile glProfile = GLProfile.get(GLProfile.GLES2);
+            GLProfile glProfile = GLProfile.get(GLProfile.GL2ES2);
             GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 
             glCapabilities.setDoubleBuffered(true);
@@ -132,7 +132,7 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
 
     @Override
     public void init(GLAutoDrawable drawable) {
-        GLES2 gl = drawable.getGL().getGLES2();
+        GL2ES2 gl = drawable.getGL().getGL2ES2();
 
         this.logger.info("Initializing OpenGL Drawable");
 
@@ -145,11 +145,11 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
 
         gl.glGenTextures(1, textureName);
 
-        gl.glEnable(GLES2.GL_DEPTH_TEST);
+        gl.glEnable(GL2ES2.GL_DEPTH_TEST);
         checkError(gl, "Init");
     }
 
-    private void initShaders(GLES2 gl) {
+    private void initShaders(GL2ES2 gl) {
         // see helper class for more detail
         this.shaderHelper = new ShaderHelper(gl, SHADERS_ROOT, SHADERS_SOURCE);
 
@@ -160,7 +160,7 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         // bind uniforms
         this.shaderHelper.bindUniform("mvp");
         this.shaderHelper.bindUniform("diffuse");
-        this.shaderHelper.bindUniform("texture_sampler");
+        //this.shaderHelper.bindUniform("texture_sampler");
 
 
         if(!checkError(gl, "Shader")) {
@@ -169,7 +169,7 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         }
     }
 
-    private void initBuffers(GLES2 gl) {
+    private void initBuffers(GL2ES2 gl) {
         gl.glGenBuffers(Buffer.MAX, this.bufferName);
         gl.glUseProgram(this.shaderHelper.getShaderProgram());
 
@@ -222,22 +222,22 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         gl.glEnableVertexAttribArray(this.shaderHelper.getAttribute("position"));
 
         // tex coords
-        gl.glBindBuffer(GL_ARRAY_BUFFER, bufferName.get(Buffer.TEXTURE));
-        gl.glVertexAttribPointer(this.shaderHelper.getAttribute("tex_coord_vert"), 2, GL_FLOAT, false, 0,0);
+        //gl.glBindBuffer(GL_ARRAY_BUFFER, bufferName.get(Buffer.TEXTURE));
+        //gl.glVertexAttribPointer(this.shaderHelper.getAttribute("tex_coord_vert"), 2, GL_FLOAT, false, 0,0);
 
-        gl.glEnableVertexAttribArray(this.shaderHelper.getAttribute("tex_coord_vert"));
+        //gl.glEnableVertexAttribArray(this.shaderHelper.getAttribute("tex_coord_vert"));
 
         // texture
-        gl.glActiveTexture(GL_TEXTURE0);
-        gl.glBindTexture(GL_TEXTURE_2D, textureName.get(0));
-        gl.glUniform1i(this.shaderHelper.getUniform("texture_sampler"), 0);
+        //gl.glActiveTexture(GL_TEXTURE0);
+        //gl.glBindTexture(GL_TEXTURE_2D, textureName.get(0));
+        //gl.glUniform1i(this.shaderHelper.getUniform("texture_sampler"), 0);
 
         checkError(gl, "Buffer");
     }
 
     @Override
     public void dispose(GLAutoDrawable drawable) {
-        GLES2 gl = drawable.getGL().getGLES2();
+        GL2ES2 gl = drawable.getGL().getGL2ES2();
 
         checkError(gl, "Dispose");
     }
@@ -271,23 +271,24 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
     boolean once = false;
     @Override
     public void display(GLAutoDrawable drawable) {
-        GLES2 gl = drawable.getGL().getGLES2();
+        GL2ES2 gl = drawable.getGL().getGL2ES2();
+
         double t1 = System.currentTimeMillis();
         theta += (t1-t0)*0.001f;
         t0 = t1;
         s = Math.sin(theta);
 
-        if(this.imageNeedsUpdate) {
+        if(this.imageNeedsUpdate && false) {
             gl.glBindTexture(GL_TEXTURE_2D, textureName.get(0));
 
             TextureData tex = AWTTextureIO.newTextureData(gl.getGLProfile(), this.nextImage, true);
-            /*
+
             try {
                 tex = TextureIO.newTextureData(gl.getGLProfile(), this.getClass().getClassLoader().getResource("img/tex.png"),true, "png");
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            */
+
 
             gl.glTexImage2D(GL_TEXTURE_2D, 0, tex.getInternalFormat(), tex.getWidth(), tex.getHeight(), 0, tex.getPixelFormat(), GL_UNSIGNED_BYTE, tex.getBuffer());
             gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
@@ -306,18 +307,20 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         gl.glUseProgram(this.shaderHelper.getShaderProgram());
 
         gl.glUniformMatrix4fv(this.shaderHelper.getUniform("mvp"), 1, false, mvp.getBuffer().array(), 0);
+        gl.glUniform4f(this.shaderHelper.getUniform("diffuse"), 0.5f, 0.5f, 0.5f, 0.0f);
 
-        drawable.swapBuffers();
+        //drawable.swapBuffers();
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         gl.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 
         gl.glFlush();
         checkError(gl, "Draw");
+
     }
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        GLES2 gl = drawable.getGL().getGLES2();
+        GL2ES2 gl = drawable.getGL().getGL2ES2();
         this.logger.info(String.format("Window has been resized to <%d, %d>", width, height));
 
         // recalculate projection matrix TODO

@@ -1,5 +1,6 @@
 package de.motivational.stairs.beamer.opengl.util;
 
+import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GLES2;
 import com.jogamp.opengl.util.glsl.ShaderCode;
 import com.jogamp.opengl.util.glsl.ShaderProgram;
@@ -21,9 +22,9 @@ public class ShaderHelper {
     private HashMap<String, Integer> attributes;
     private HashMap<String, Integer> uniforms;
     private HashMap<String, Integer> textures;
-    private GLES2 gl;
+    private GL2ES2 gl;
 
-    public ShaderHelper(GLES2 gl, String shaderRoot, String shaderSource) {
+    public ShaderHelper(GL2ES2 gl, String shaderRoot, String shaderSource) {
         this.gl = gl;
         this.attributes = new HashMap<>();
         this.uniforms = new HashMap<>();
