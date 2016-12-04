@@ -11,6 +11,7 @@
     "grunt-execute": "^0.2.2",
     "grunt-run": "^0.6.0",
     "material-ui": "^0.16.4",
+    "react-grid-system": "^2.0.2",
     "react-scripts": "0.7.0",
     "react-tap-event-plugin": "^2.0.1"
   },

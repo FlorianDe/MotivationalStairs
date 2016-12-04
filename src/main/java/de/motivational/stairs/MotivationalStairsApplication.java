@@ -16,20 +16,26 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 public class MotivationalStairsApplication  extends WebMvcAutoConfiguration {
 
-	private static boolean withContext = true;
+	public static boolean withServer = false;
 
 	public static void main(String[] args) {
-		if(withContext) {
+
+		///*
+		if(withServer) {
 			ConfigurableApplicationContext context = new SpringApplicationBuilder(MotivationalStairsApplication.class)
 					.headless(false)
 					.web(true)
 					.run(args);
 			AppPrincipalFrame frame = context.getBeanFactory().getBean(AppPrincipalFrame.class);
 
-			//frame.startFrame();
+			frame.startFrame();
 		} else {
 			StairsTransformFrame transformFrame = new StairsTransformFrame();
 		}
+
+
+//*/
+
 		//SpringApplication.run(MotivationalStairsApplication.class, args);
 	}
 
