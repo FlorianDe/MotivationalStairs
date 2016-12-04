@@ -5,6 +5,7 @@ import com.hackoeur.jglm.Matrices;
 import com.hackoeur.jglm.Vec3;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.GLBuffers;
@@ -19,6 +20,9 @@ import de.motivational.stairs.game.general.IBeamerFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +31,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-import static com.jogamp.opengl.GL.*;
+import static com.jogamp.opengl.GL2ES2.*;
 import static com.jogamp.opengl.GL.GL_NO_ERROR;
 import static com.jogamp.opengl.GL2ES3.GL_TEXTURE_BUFFER;
 
@@ -42,6 +46,8 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
 
     // GL Context
     private GLWindow glWindow = null;
+    private GLCanvas canvas = null;
+    private Frame frame = null;
     private Animator animator;
     private boolean glInitialized = false;
 
@@ -51,7 +57,7 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
     // OPENGL
     private final String SHADERS_ROOT = "shaders";
     private final String SHADERS_SOURCE = "stairs-transform";
-    private boolean imageNeedsUpdate = false;
+    private boolean imageNeedsUpdate = true;
 
     private final class Semantic {
         static final int POSITION = 0;
@@ -99,6 +105,30 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
 
             glCapabilities.setDoubleBuffered(true);
             // init all known window props
+
+            ///*
+            this.canvas = new GLCanvas(glCapabilities);
+            this.frame = new Frame();
+            this.frame.add(this.canvas);
+            this.frame.setSize(640,480);
+            this.frame.setVisible(true);
+            this.frame.setTitle("MotivationalStairs - Stairs Projection mapper");
+
+            this.canvas.addGLEventListener(this);
+            this.animator = new Animator(this.canvas);
+            this.animator.start();
+
+            this.frame.addWindowListener( new WindowAdapter() {
+                public void windowClosing( WindowEvent windowevent ) {
+                    frame.remove( canvas );
+                    frame.dispose();
+                    System.exit( 0 );
+                }
+            });
+
+            //*/
+
+            /*
             this.glWindow = GLWindow.create(glCapabilities);
             this.glWindow.setUndecorated(false);
             this.glWindow.setSize(640, 480);
@@ -115,6 +145,7 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
 
             this.animator = new Animator(this.glWindow);
             this.animator.start();
+            //*/
             this.glInitialized = true;
         } else {
             this.logger.debug("OpenGL Context already created, skipping");
@@ -160,7 +191,7 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         // bind uniforms
         this.shaderHelper.bindUniform("mvp");
         this.shaderHelper.bindUniform("diffuse");
-        //this.shaderHelper.bindUniform("texture_sampler");
+        this.shaderHelper.bindUniform("texture_sampler");
 
 
         if(!checkError(gl, "Shader")) {
@@ -177,8 +208,8 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         float[] positions = new float[]{
                 1.0f,  1.0f, 0.0f,
                 -1.0f, 1.0f, 0.0f,
-                -1.0f, -1.0f, 0.0f,
-                1.0f, -1.0f, 0.0f
+                -1.0f, -2.0f, 0.0f,
+                1.0f, -1.0f, 1.0f
         };
 
         float[] texture = new float[] {
@@ -198,16 +229,47 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         FloatBuffer textureVBO = GLBuffers.newDirectFloatBuffer(texture);
         ShortBuffer indexVBO = GLBuffers.newDirectShortBuffer(elements);
 
-        // vertices
-        gl.glBindBuffer(GL_ARRAY_BUFFER, this.bufferName.get(Buffer.VERTEX));
-        gl.glBufferData(GL_ARRAY_BUFFER, positionVBO.capacity() * Float.BYTES, positionVBO, GL_STATIC_DRAW);
-        gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
-
         // textures
         gl.glBindBuffer(GL_ARRAY_BUFFER, this.bufferName.get(Buffer.TEXTURE));
         gl.glBufferData(GL_ARRAY_BUFFER, textureVBO.capacity() * Float.BYTES, textureVBO, GL_STATIC_DRAW);
         gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+
+        // tex coords
+        gl.glBindBuffer(GL_ARRAY_BUFFER, bufferName.get(Buffer.TEXTURE));
+        gl.glEnableVertexAttribArray(this.shaderHelper.getAttribute("tex_coord_vert"));
+        gl.glVertexAttribPointer(this.shaderHelper.getAttribute("tex_coord_vert"), 2, GL_FLOAT, false, 0, 0);
+
+
+        gl.glActiveTexture(GL2ES2.GL_TEXTURE0);
+        gl.glBindTexture(GL_TEXTURE_2D, textureName.get(0));
+        gl.glUniform1i(this.shaderHelper.getUniform("texture_sampler"), 0);
+
+        TextureData tex = null;
+
+        try {
+            tex = TextureIO.newTextureData(gl.getGLProfile(), this.getClass().getClassLoader().getResource("img/tex.png"),true, ".png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        byte[] pix = new byte[] {
+                (byte) 0xff, 0, (byte) 0xff, (byte) 0xff, 0, 0,
+                (byte) 0xff, 0, 0, (byte) 0xff, 0, 0, 0, 0
+        };
+
+        ByteBuffer pixVBO = GLBuffers.newDirectByteBuffer(pix);
+
+        gl.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 2, 2, 0, GL_RGB, GL_UNSIGNED_BYTE,pixVBO);
+        //gl.glTexImage2D(GL_TEXTURE_2D, 0, tex.getInternalFormat(), tex.getWidth(), tex.getHeight(), 0, tex.getPixelFormat(), GL_UNSIGNED_BYTE, tex.getBuffer());
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+        gl.glBindTexture(GL_TEXTURE_2D, 0);
+
+        // vertices
+        gl.glBindBuffer(GL_ARRAY_BUFFER, this.bufferName.get(Buffer.VERTEX));
+        gl.glBufferData(GL_ARRAY_BUFFER, positionVBO.capacity() * Float.BYTES, positionVBO, GL_STATIC_DRAW);
+        gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
         // elements
         gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.bufferName.get(Buffer.ELEMENT));
         gl.glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexVBO.capacity()*Short.BYTES, indexVBO, GL_STATIC_DRAW);
@@ -221,17 +283,39 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferName.get(Buffer.ELEMENT));
         gl.glEnableVertexAttribArray(this.shaderHelper.getAttribute("position"));
 
-        // tex coords
-        //gl.glBindBuffer(GL_ARRAY_BUFFER, bufferName.get(Buffer.TEXTURE));
-        //gl.glVertexAttribPointer(this.shaderHelper.getAttribute("tex_coord_vert"), 2, GL_FLOAT, false, 0,0);
 
-        //gl.glEnableVertexAttribArray(this.shaderHelper.getAttribute("tex_coord_vert"));
+        /*
+
+        gl.glEnableVertexAttribArray(this.shaderHelper.getAttribute("texture_sampler"));
 
         // texture
-        //gl.glActiveTexture(GL_TEXTURE0);
-        //gl.glBindTexture(GL_TEXTURE_2D, textureName.get(0));
-        //gl.glUniform1i(this.shaderHelper.getUniform("texture_sampler"), 0);
+        gl.glBindTexture(GL_TEXTURE_2D, textureName.get(0));
 
+        TextureData tex = null;//= AWTTextureIO.newTextureData(gl.getGLProfile(), this.nextImage, true);
+        Texture texx = null;
+        try {
+            texx = TextureIO.newTexture(this.getClass().getClassLoader().getResource("img/tex.png"),false, ".png");
+            //tex = TextureIO.newTextureData(gl.getGLProfile(), this.getClass().getClassLoader().getResource("img/tex.png"),true, ".png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        texx.setTexParameteri(gl, GL2ES2.GL_TEXTURE_MIN_FILTER, GL2ES2.GL_LINEAR);
+        texx.setTexParameteri(gl, GL2ES2.GL_TEXTURE_MAG_FILTER, GL2ES2.GL_LINEAR);
+        texx.setTexParameteri(gl, GL2ES2.GL_TEXTURE_WRAP_S, GL2ES2.GL_CLAMP_TO_EDGE);
+        texx.setTexParameteri(gl, GL2ES2.GL_TEXTURE_WRAP_T, GL2ES2.GL_CLAMP_TO_EDGE);
+
+
+
+        //gl.glTexImage2D(GL_TEXTURE_2D, 0, texx.getInternalFormat(), tex.getWidth(), tex.getHeight(), 0, tex.getPixelFormat(), GL_UNSIGNED_BYTE, tex.getBuffer());
+        //gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+        //gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+        //gl.glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+        //gl.glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        //gl.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        gl.glVertexAttribPointer(this.shaderHelper.getAttribute("texture_sampler"), 2, GL_FLOAT, false, 0, 0);
+        */
         checkError(gl, "Buffer");
     }
 
@@ -259,7 +343,7 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
 
     private Mat4 getProjectionMatrix(float fov, float near, float far) {
         return Matrices.perspective(fov, // FOV
-                (float)this.glWindow.getWidth() / (float)this.glWindow.getHeight(), // ASPECT
+                (float)this.frame.getWidth() / (float)this.frame.getHeight(), // ASPECT
                 near, far);
     }
 
@@ -278,39 +362,31 @@ public class StairsTransformFrame implements IBeamerFrame, GLEventListener {
         t0 = t1;
         s = Math.sin(theta);
 
-        if(this.imageNeedsUpdate && false) {
-            gl.glBindTexture(GL_TEXTURE_2D, textureName.get(0));
+        if(this.imageNeedsUpdate) {
 
-            TextureData tex = AWTTextureIO.newTextureData(gl.getGLProfile(), this.nextImage, true);
-
-            try {
-                tex = TextureIO.newTextureData(gl.getGLProfile(), this.getClass().getClassLoader().getResource("img/tex.png"),true, "png");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            gl.glTexImage2D(GL_TEXTURE_2D, 0, tex.getInternalFormat(), tex.getWidth(), tex.getHeight(), 0, tex.getPixelFormat(), GL_UNSIGNED_BYTE, tex.getBuffer());
-            gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-            gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 
             this.imageNeedsUpdate = false;
         }
 
         Mat4 projection = this.getProjectionMatrix(55, 0.1f, 1000.f);// NEAR, FAR
-        Mat4 model = transformModel(0, 0, 0, (float) (90*s), 0, 0);
+        Mat4 model = transformModel(-0.5f, -0.5f, 0, (float) (90*s), 0, 0);
 
-        Mat4 view = getViewMatrix(0, 0.5f, -3, 0, -10, 0);
+        Mat4 view = getViewMatrix(0.0f, 0.0f, -3, 0, -10, 0);
 
         Mat4 mvp = projection.multiply(view).multiply(model);
 
         gl.glUseProgram(this.shaderHelper.getShaderProgram());
 
         gl.glUniformMatrix4fv(this.shaderHelper.getUniform("mvp"), 1, false, mvp.getBuffer().array(), 0);
-        gl.glUniform4f(this.shaderHelper.getUniform("diffuse"), 0.5f, 0.5f, 0.5f, 0.0f);
+        gl.glUniform4f(this.shaderHelper.getUniform("diffuse"), 0.2f, 0.2f, 0.2f, 0.0f);
+
+        gl.glActiveTexture(GL_TEXTURE0);
+        gl.glBindTexture(GL_TEXTURE_2D, textureName.get(0));
+        gl.glUniform1i(this.shaderHelper.getUniform("texture_sampler"), 0);
 
         //drawable.swapBuffers();
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         gl.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 
         gl.glFlush();

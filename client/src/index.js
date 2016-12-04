@@ -1,9 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import './index.css';
+import Game from './js/game/Game.js';
+import Configurator from './js/configurator/Configurator';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import './css/index.css';
+
+injectTapEventPlugin();
+
+function getApp() {
+    return ((/^#configure*/gi.test(window.location.hash))?<Configurator/> :<Game />);
+}
 
 ReactDOM.render(
-  <App />,
-  document.getElementById('root')
+    getApp(),
+    document.getElementById('root')
 );
