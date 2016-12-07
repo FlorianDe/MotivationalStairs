@@ -14,6 +14,8 @@ import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
+import CircularProgress from 'material-ui/CircularProgress';
+
 
 const styles = {
     header: {
@@ -47,6 +49,10 @@ const styles = {
 
     table: {
        paddingTop: 60
+    },
+
+    wait: {
+
     }
 };
 
@@ -66,7 +72,7 @@ class MotivationalStairsGame extends React.Component {
 
             "Sind Sie bereit? Dann begeben Sie sich auf die Treppe und starten Sie das Spiel!",
 
-            "Viel Spaß beim Spielen!"
+            "Sie müssen sich noch kurz gedulden es sind noch ein paar Spieler vor Ihnen dran!"
         ]
     };
 
@@ -186,7 +192,17 @@ class MotivationalStairsGame extends React.Component {
                         { this.getStepNavigationComponent() }
                     </div>;
             case 3:
-                return "";
+                return (
+                    <div>
+                        <div style={styles.wait}>5</div>
+                        <CircularProgress
+                            mode="determinate"
+                            value={30}
+                            size={80}
+                            thickness={5}
+                        />
+                    </div>
+                );
             default:
                 return "";
         }
@@ -274,6 +290,8 @@ class MotivationalStairsGame extends React.Component {
                         >
                             <TableHeader
                                 adjustForCheckbox={false}
+                                displayRowCheckbox={false}
+                                enableSelectAll={false}
                             >
                                 <TableRow>
                                     <TableHeaderColumn>Punkte</TableHeaderColumn>
@@ -283,6 +301,7 @@ class MotivationalStairsGame extends React.Component {
                             </TableHeader>
                             <TableBody
                                 displayRowCheckbox={false}
+                                adjustForCheckbox={false}
                             >
                                 {
                                     this.props.highScores.map((score => {
