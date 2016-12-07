@@ -57,8 +57,6 @@ class Game extends React.Component {
 
 
     render() {
-        console.log(this.state.highScores);
-
         return (
             <MuiThemeProvider>
                 <MotivationalStairs

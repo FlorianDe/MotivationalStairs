@@ -45,17 +45,9 @@ const styles = {
         margin: 20
     },
 
-    tabs: [
-        {
-            backgroundColor: "#0097A7"
-        },
-        {
-            backgroundColor: "#00838F"
-        },
-        {
-            backgroundColor: "#006064"
-        }
-    ]
+    table: {
+       paddingTop: 60
+    }
 };
 
 
@@ -116,7 +108,8 @@ class MotivationalStairsGame extends React.Component {
     };
 
     getStepNavigationComponent = () => {
-        return <div style={{marginTop: 12}}>
+        return (
+        <div style={{marginTop: 12}}>
             <FlatButton
                 label="Zurück"
                 disabled={this.state.step === 0}
@@ -128,14 +121,15 @@ class MotivationalStairsGame extends React.Component {
                 primary={true}
                 onTouchTap={() => {this.handleNext(this.state.selectedGame)}}
             />
-        </div>
+        </div>)
     };
 
     getStepComponent = (step) => {
         switch (step) {
             case 0:
                 return this.props.games.map((game) => {
-                    return <Card
+                    return (
+                    <Card
                         key={game.id}
                         expanded={this.state.expandedGame === game.id}
                         onExpandChange={(expanded) => {this.handleExpandChange(game.id, expanded)}}
@@ -167,10 +161,11 @@ class MotivationalStairsGame extends React.Component {
                         >
                             <img src={game.image} />
                         </CardMedia>
-                    </Card>
+                    </Card>);
                 });
             case 1:
-                return <div style={styles.gameNavigation}>
+                return (
+                    <div style={styles.gameNavigation}>
                         <RadioButtonGroup
                             name="modeSelect"
                         >
@@ -185,7 +180,7 @@ class MotivationalStairsGame extends React.Component {
                             }
                         </RadioButtonGroup>
                     { this.getStepNavigationComponent() }
-                    </div>;
+                    </div>);
             case 2:
                 return <div style={styles.gameNavigation}>
                         { this.getStepNavigationComponent() }
@@ -198,7 +193,8 @@ class MotivationalStairsGame extends React.Component {
     };
 
     render() {
-        return <div>
+        return (
+        <div>
             <div style={styles.appBar}>
                 <AppBar
 
@@ -272,7 +268,7 @@ class MotivationalStairsGame extends React.Component {
                         </Row>
                     </Container>
                 :
-                    <Container>
+                    <Container style={styles.table}>
                         <Table
                             selectable={false}
                         >
@@ -302,7 +298,7 @@ class MotivationalStairsGame extends React.Component {
                     </Container>
             }
 
-        </div>
+        </div>);
     }
 }
 
