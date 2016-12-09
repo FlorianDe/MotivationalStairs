@@ -14,8 +14,8 @@ import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
-import CircularProgress from 'material-ui/CircularProgress';
-
+import {List, ListItem} from 'material-ui/List';
+import LinearProgress from 'material-ui/LinearProgress';
 
 const styles = {
     header: {
@@ -194,13 +194,15 @@ class MotivationalStairsGame extends React.Component {
             case 3:
                 return (
                     <div>
-                        <div style={styles.wait}>5</div>
-                        <CircularProgress
-                            mode="determinate"
-                            value={30}
-                            size={80}
-                            thickness={5}
-                        />
+                        <LinearProgress mode="determinate" value={30}/>
+                        <Paper style={styles.paper} zDepth={1}>
+                            <List>
+                                <ListItem primaryText="Martin" />
+                                <ListItem primaryText="Kevin" />
+                                <ListItem primaryText="Peter" />
+                                <ListItem primaryText="Johannes" />
+                            </List>
+                        </Paper>
                     </div>
                 );
             default:
@@ -287,11 +289,14 @@ class MotivationalStairsGame extends React.Component {
                     <Container style={styles.table}>
                         <Table
                             selectable={false}
+                            multiSelectable={false}
+                            fixedHeader={true}
                         >
                             <TableHeader
                                 adjustForCheckbox={false}
                                 displayRowCheckbox={false}
                                 enableSelectAll={false}
+                                displayHeaderSelectAll={false}
                             >
                                 <TableRow>
                                     <TableHeaderColumn>Punkte</TableHeaderColumn>
@@ -304,11 +309,16 @@ class MotivationalStairsGame extends React.Component {
                                 adjustForCheckbox={false}
                             >
                                 {
-                                    this.props.highScores.map((score => {
-                                       return <TableRow key={score.user.id}>
-                                           <TableRowColumn>{score.score}</TableRowColumn>
+                                    this.props.highScores.map(((score,id) => {
+                                        var rowStyle = {};
+                                        if(id == 5) {
+                                            rowStyle.backgroundColor = "#76d1ff";
+                                            rowStyle.borderBottom = "1px solid rgb(101, 180, 247)";
+                                        }
+                                       return <TableRow key={score.user.id} style={rowStyle}>
+                                           <TableRowColumn style={{width: 35}}>{score.score}</TableRowColumn>
                                            <TableRowColumn>{score.user.name}</TableRowColumn>
-                                           <TableRowColumn>{score.date}</TableRowColumn>
+                                           <TableRowColumn style={{width: 68}}>{score.date}</TableRowColumn>
                                        </TableRow>
                                     }))
                                 }
