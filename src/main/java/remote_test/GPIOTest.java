@@ -48,12 +48,6 @@ public class GPIOTest {
 
         System.out.println("Exiting ControlGpioExample");
 
-
-
-
-
-
-
         System.out.println("<--Pi4J--> GPIO Listen Example ... started.");
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
@@ -75,8 +69,28 @@ public class GPIOTest {
         System.out.println(" ... complete the GPIO #02 circuit and see the listener feedback here in the console.");
 
         // keep program running until user aborts (CTRL-C)
+        GpioPinDigitalOutput dataPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "data", PinState.LOW);
+        GpioPinDigitalOutput clockPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "clock", PinState.LOW);
+        LPD6803 ledStrip = new LPD6803(dataPin, clockPin, 2);
+        ledStrip.setPixelColor(0, (byte)255, (byte)0, (byte)0);
+        ledStrip.setPixelColor(1, (byte)0, (byte)255, (byte)0);
+        ledStrip.setPixelColor(2, (byte)0, (byte)0, (byte)255);
+
+        byte color = 0;
         while(true) {
-            Thread.sleep(500);
+            ledStrip.writeLeds();
+            Thread.sleep(0);
+            if(ledStrip.isDone()) {
+                System.out.println("set color " + color);
+                color++;
+                if(color > 125) {
+                    color = 0;
+                }
+                ledStrip.setPixelColor(2, (byte)color, (byte)0, (byte)0);
+                ledStrip.setPixelColor(1, (byte)0, (byte)color, (byte)0);
+                ledStrip.setPixelColor(0, (byte)0, (byte)0, (byte)color);
+                ledStrip.show();
+            }
         }
 
         // stop all GPIO activity/threads by shutting down the GPIO controller

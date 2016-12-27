@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 public class MotivationalStairsApplication  extends WebMvcAutoConfiguration {
 
-	public static boolean withServer = false;
+	public static boolean withServer = true;
 
 	public static void main(String[] args) {
 
@@ -28,7 +28,7 @@ public class MotivationalStairsApplication  extends WebMvcAutoConfiguration {
 					.run(args);
 			AppPrincipalFrame frame = context.getBeanFactory().getBean(AppPrincipalFrame.class);
 
-			frame.startFrame();
+			//frame.startFrame();
 		} else {
 			StairsTransformFrame transformFrame = new StairsTransformFrame();
 		}
