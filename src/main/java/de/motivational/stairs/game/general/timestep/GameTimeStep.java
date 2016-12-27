@@ -28,7 +28,7 @@ public abstract class GameTimeStep implements IBeamerGame {
                     float elapsed = (now - start) / 1000000000f;
                     start = now;
                     internalUpdateWithFixedTimeStep(elapsed, maxSubSteps, fixedTimeStep);
-                    internalUpdateGraphicsInterpolated();
+                    render();
                     if (1000000000 * fixedTimeStep - (System.nanoTime() - start) > 1000000) {
                         try {
                             Thread.sleep(0, 999999);
@@ -66,6 +66,6 @@ public abstract class GameTimeStep implements IBeamerGame {
     }
 
     public abstract void start();
-    protected abstract void  internalUpdateGraphicsInterpolated();
+    protected abstract void render();
     protected abstract void update(float elapsedTime);
 }

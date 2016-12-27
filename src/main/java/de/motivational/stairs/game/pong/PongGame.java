@@ -31,7 +31,7 @@ public class PongGame extends GameTimeStep{
     }
 
     @Override
-    protected void internalUpdateGraphicsInterpolated() {
+    protected void render() {
         pongView.render(localTime);
         //TODO @VIKTOR NON AFFINE IMG TRANSFORM
         //TODO SHOW
