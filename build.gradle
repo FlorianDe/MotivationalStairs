@@ -51,6 +51,7 @@ dependencies {
 
 	compile("org.springframework.boot:spring-boot-devtools")
 
+	compile("com.pi4j:pi4j-core:1.1")
 
 	//testCompile('org.springframework.boot:spring-boot-starter-test')
 
