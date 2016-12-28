@@ -1,6 +1,5 @@
-package de.motivational.stairs.database.repository;
+package de.motivational.stairs.database.service;
 
-import de.motivational.stairs.database.entity.BeamerEntity;
 import de.motivational.stairs.database.entity.GameEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

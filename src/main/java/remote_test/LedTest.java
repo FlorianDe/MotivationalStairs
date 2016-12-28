@@ -26,7 +26,6 @@ public class LedTest {
 
             Thread.sleep(1000);
 
-            //TODO TURN ON ETC
             //animate(ledStrip);
 
             Thread.sleep(4000);

@@ -1,4 +1,4 @@
-package de.motivational.stairs.database.repository;
+package de.motivational.stairs.database.service;
 
 import de.motivational.stairs.database.entity.OffsetEntity;
 import de.motivational.stairs.rest.dto.setup.OffsetDto;

@@ -2,7 +2,7 @@ package de.motivational.stairs.beamer;
 
 import de.motivational.stairs.game.general.BeamerGameFrame;
 import de.motivational.stairs.database.entity.BeamerSetupEntity;
-import de.motivational.stairs.database.repository.BeamerSetupService;
+import de.motivational.stairs.database.service.BeamerSetupService;
 import de.motivational.stairs.beamer.opengl.StairsTransformFrame;
 import de.motivational.stairs.game.pong.PongGame;
 import de.motivational.stairs.game.pong.model.Paddle;

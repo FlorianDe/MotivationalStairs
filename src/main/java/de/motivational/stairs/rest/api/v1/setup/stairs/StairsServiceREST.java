@@ -4,7 +4,7 @@ package de.motivational.stairs.rest.api.v1.setup.stairs;
  * Created by Florian on 11.07.2016.
  */
 
-import de.motivational.stairs.database.repository.StairsService;
+import de.motivational.stairs.database.service.StairsService;
 import de.motivational.stairs.rest.dto.setup.StairsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping(value="/api/v1.0/settings/stairs")
+@RequestMapping(value="/api/v1.0/setup/stairs")
 public class StairsServiceREST {
 
     @Autowired

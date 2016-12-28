@@ -4,18 +4,17 @@ package de.motivational.stairs.rest.api.v1.setup.beamersetup;
  * Created by Florian on 11.07.2016.
  */
 
-import de.motivational.stairs.database.repository.BeamerSetupService;
+import de.motivational.stairs.database.service.BeamerSetupService;
 import de.motivational.stairs.rest.dto.setup.BeamerSetupDto;
 import de.motivational.stairs.rest.dto.setup.SetupsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Optional;
 
 
 @RestController
-@RequestMapping(value="/api/v1.0/settings/beamersetup")
+@RequestMapping(value="/api/v1.0/setup/beamersetup")
 public class BeamerSetupServiceREST {
 
     @Autowired

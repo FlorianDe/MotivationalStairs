@@ -1,0 +1,9 @@
+${AnsiColor.BRIGHT_BLUE}#    __  __       _   _            _   _                   _    _____ _        _
+${AnsiColor.BRIGHT_BLUE}#   |  \/  |     | | (_)          | | (_)                 | |  / ____| |      (_)
+${AnsiColor.BRIGHT_BLUE}#   | \  / | ___ | |_ ___   ____ _| |_ _  ___  _ __   __ _| | | (___ | |_ __ _ _ _ __ ___
+${AnsiColor.BRIGHT_BLUE}#   | |\/| |/ _ \| __| \ \ / / _` | __| |/ _ \| '_ \ / _` | |  \___ \| __/ _` | | '__/ __|
+${AnsiColor.BRIGHT_BLUE}#   | |  | | (_) | |_| |\ V / (_| | |_| | (_) | | | | (_| | |  ____) | || (_| | | |  \__ \
+${AnsiColor.BRIGHT_BLUE}#   |_|  |_|\___/ \__|_| \_/ \__,_|\__|_|\___/|_| |_|\__,_|_| |_____/ \__\__,_|_|_|  |___/
+${AnsiColor.BRIGHT_BLUE}#
+${AnsiColor.BRIGHT_BLUE}:: Motivational Stairs v1.0  :: Running Spring Boot ${spring-boot.version} ::
+:: http://jhipster.github.io ::${AnsiColor.DEFAULT}

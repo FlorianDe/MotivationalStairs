@@ -4,8 +4,9 @@ package de.motivational.stairs.rest.api.v1.setup.beamer;
  * Created by Florian on 11.07.2016.
  */
 
-import de.motivational.stairs.database.repository.BeamerService;
+import de.motivational.stairs.database.service.BeamerService;
 import de.motivational.stairs.rest.dto.setup.BeamerDto;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping(value="/api/v1.0/settings/beamer")
+@RequestMapping(value="/api/v1.0/setup/beamer")
 public class BeamerServiceREST {
 
     @Autowired

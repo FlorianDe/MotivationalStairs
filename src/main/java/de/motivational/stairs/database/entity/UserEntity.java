@@ -1,27 +1,16 @@
 package de.motivational.stairs.database.entity;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
- * Created by Florian on 24.11.2016.
+ * Created by Florian on 27.12.2016.
  */
 @Entity
 @Table(name = "user", schema = "motivationalstairs")
 public class UserEntity {
-    private int userId;
     private String cookie;
-    private Collection<HighscoreEntity> highscoresByUserId;
-
-    @Id
-    @Column(name = "userId")
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+    private int userId;
+    private String name;
 
     @Basic
     @Column(name = "cookie")
@@ -33,6 +22,26 @@ public class UserEntity {
         this.cookie = cookie;
     }
 
+    @Id
+    @Column(name = "user_id")
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    @Basic
+    @Column(name = "name")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -42,23 +51,26 @@ public class UserEntity {
 
         if (userId != that.userId) return false;
         if (cookie != null ? !cookie.equals(that.cookie) : that.cookie != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = userId;
-        result = 31 * result + (cookie != null ? cookie.hashCode() : 0);
+        int result = cookie != null ? cookie.hashCode() : 0;
+        result = 31 * result + userId;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
 
-    @OneToMany(mappedBy = "userByUserId")
-    public Collection<HighscoreEntity> getHighscoresByUserId() {
-        return highscoresByUserId;
-    }
-
-    public void setHighscoresByUserId(Collection<HighscoreEntity> highscoresByUserId) {
-        this.highscoresByUserId = highscoresByUserId;
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UserEntity{");
+        sb.append("cookie='").append(cookie).append('\'');
+        sb.append(", userId=").append(userId);
+        sb.append(", name='").append(name).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

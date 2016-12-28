@@ -1,27 +1,19 @@
 package de.motivational.stairs.database.entity;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 /**
- * Created by Florian on 24.11.2016.
+ * Created by Florian on 27.12.2016.
  */
 @Entity
 @Table(name = "highscore", schema = "motivationalstairs")
 public class HighscoreEntity {
-    private int highscoreId;
     private int highscore;
+    private int highscoreId;
+    private Timestamp created;
     private GameEntity gameByGameId;
     private UserEntity userByUserId;
-
-    @Id
-    @Column(name = "highscoreId")
-    public int getHighscoreId() {
-        return highscoreId;
-    }
-
-    public void setHighscoreId(int highscoreId) {
-        this.highscoreId = highscoreId;
-    }
 
     @Basic
     @Column(name = "highscore")
@@ -33,6 +25,26 @@ public class HighscoreEntity {
         this.highscore = highscore;
     }
 
+    @Id
+    @Column(name = "highscore_id")
+    public int getHighscoreId() {
+        return highscoreId;
+    }
+
+    public void setHighscoreId(int highscoreId) {
+        this.highscoreId = highscoreId;
+    }
+
+    @Basic
+    @Column(name = "created")
+    public Timestamp getCreated() {
+        return created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,21 +52,23 @@ public class HighscoreEntity {
 
         HighscoreEntity that = (HighscoreEntity) o;
 
-        if (highscoreId != that.highscoreId) return false;
         if (highscore != that.highscore) return false;
+        if (highscoreId != that.highscoreId) return false;
+        if (created != null ? !created.equals(that.created) : that.created != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = highscoreId;
-        result = 31 * result + highscore;
+        int result = highscore;
+        result = 31 * result + highscoreId;
+        result = 31 * result + (created != null ? created.hashCode() : 0);
         return result;
     }
 
     @ManyToOne
-    @JoinColumn(name = "gameId", referencedColumnName = "gameId", nullable = false)
+    @JoinColumn(name = "game_id", referencedColumnName = "game_id", nullable = false)
     public GameEntity getGameByGameId() {
         return gameByGameId;
     }
@@ -64,7 +78,7 @@ public class HighscoreEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     public UserEntity getUserByUserId() {
         return userByUserId;
     }
@@ -77,8 +91,9 @@ public class HighscoreEntity {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("HighscoreEntity{");
-        sb.append("highscoreId=").append(highscoreId);
-        sb.append(", highscore=").append(highscore);
+        sb.append("highscore=").append(highscore);
+        sb.append(", highscoreId=").append(highscoreId);
+        sb.append(", created=").append(created);
         sb.append(", gameByGameId=").append(gameByGameId);
         sb.append(", userByUserId=").append(userByUserId);
         sb.append('}');
