@@ -13,6 +13,10 @@ public class PongController extends GameTimeStepController {
     PongModel pongModel;
     PongView pongView;
 
+    enum BallState{
+        IN_CENTER, HIT_LEFT_WALL, HIT_RIGHT_WALL, HIT_LEFT_PADLE, HIT_RIGHT_PADLE, HIT_TOP_WALL, HIT_BOTTOM_WALL;
+    }
+
     public PongController(PongModel pongModel){
         super();
         this.pongModel = pongModel;
@@ -38,38 +42,91 @@ public class PongController extends GameTimeStepController {
         //TODO BACKTRACK LOGIC!!
         Ball b = pongModel.getBall();
 
-        b.setPosX(b.getPosX()+b.getVelocityX() * elapsedTime);
-        b.setPosY(b.getPosY()+b.getVelocityY() * elapsedTime);
+        /*
+
         if(b.getPosX()<=pongModel.getPaddleLeft().getPosX()+pongModel.getPaddleLeft().getWidth()+b.getRadius()
                 && (pongModel.getPaddleLeft().getPosY()<=b.getPosY()
                     && b.getPosY()<=pongModel.getPaddleLeft().getPosY()+pongModel.getPaddleLeft().getHeight())){
-            b.setVelocityX(b.getVelocityX()*-1);
-            this.pongModel.incrementPointsLeft(1);
+
         } else if(b.getPosX()>=pongModel.getPaddleRight().getPosX()-pongModel.getPaddleRight().getWidth()+b.getRadius()
                 && (pongModel.getPaddleRight().getPosY()<=b.getPosY()
                 && b.getPosY()<=pongModel.getPaddleRight().getPosY()+pongModel.getPaddleRight().getHeight())){
-            b.setVelocityX(b.getVelocityX()*-1);
-            this.pongModel.incrementPointsRight(1);
+
         } else if (b.getPosX() >= pongModel.getWidth() - b.getRadius()) {
-            b.setVelocityX(b.getVelocityX()*-1);
-            this.pongModel.incrementPointsLeft(5);
-            this.pongModel.decrementTries();
+
         } else if (b.getPosX() <= b.getRadius()) {
-            b.setVelocityX(b.getVelocityX()*-1);
-            this.pongModel.incrementPointsRight(5);
-            this.pongModel.decrementTries();
+
         } else if (b.getPosY() >= pongModel.getHeight() - b.getRadius()) {
-            b.setVelocityY(b.getVelocityY()*-1);
+
         } else if (b.getPosY() <= b.getRadius()) {
             b.setVelocityY(b.getVelocityY()*-1);
         }
+        */
+        BallState state = this.trackBall(elapsedTime);
+
+        switch (state) {
+            case IN_CENTER:
+                break;
+            case HIT_LEFT_WALL:
+                b.setVelocityX(b.getVelocityX()*-1);
+                this.pongModel.incrementPointsRight(5);
+                this.pongModel.decrementTries();
+                break;
+            case HIT_RIGHT_WALL:
+                b.setVelocityX(b.getVelocityX()*-1);
+                this.pongModel.incrementPointsLeft(5);
+                this.pongModel.decrementTries();
+                break;
+            case HIT_LEFT_PADLE:
+
+                b.setVelocityX(b.getVelocityX()*-1);
+                this.pongModel.incrementPointsLeft(1);
+                break;
+            case HIT_RIGHT_PADLE:
+                b.setVelocityX(b.getVelocityX()*-1);
+                this.pongModel.incrementPointsRight(1);
+                break;
+            case HIT_TOP_WALL:
+            case HIT_BOTTOM_WALL:
+                b.setVelocityY(b.getVelocityY()*-1);
+                break;
+        }
+        b.setPosX(b.getPosX()+b.getVelocityX() * elapsedTime);
+        b.setPosY(b.getPosY()+b.getVelocityY() * elapsedTime);
+    }
+
+    private BallState trackBall(float elapsedTime) {
+        Ball b = new Ball(pongModel.getBall());
+
+        b.setPosX(b.getPosX()+b.getVelocityX() * elapsedTime);
+        b.setPosY(b.getPosY()+b.getVelocityY() * elapsedTime);
+
+        if(b.getPosX()<=pongModel.getPaddleLeft().getPosX()+pongModel.getPaddleLeft().getWidth()+b.getRadius()
+                && (pongModel.getPaddleLeft().getPosY()<=b.getPosY()
+                && b.getPosY()<=pongModel.getPaddleLeft().getPosY()+pongModel.getPaddleLeft().getHeight())){
+            return BallState.HIT_LEFT_PADLE;
+        } else if(b.getPosX()>=pongModel.getPaddleRight().getPosX()-pongModel.getPaddleRight().getWidth()+b.getRadius()
+                && (pongModel.getPaddleRight().getPosY()<=b.getPosY()
+                && b.getPosY()<=pongModel.getPaddleRight().getPosY()+pongModel.getPaddleRight().getHeight())){
+            return BallState.HIT_RIGHT_PADLE;
+        } else if (b.getPosX() >= pongModel.getWidth() - b.getRadius()) {
+           return BallState.HIT_RIGHT_WALL;
+        } else if (b.getPosX() <= b.getRadius()) {
+            return BallState.HIT_LEFT_WALL;
+        } else if (b.getPosY() >= pongModel.getHeight() - b.getRadius()) {
+            return BallState.HIT_BOTTOM_WALL;
+        } else if (b.getPosY() <= b.getRadius()) {
+            return BallState.HIT_TOP_WALL;
+        }
+
+        return BallState.IN_CENTER;
     }
 
     public void movePaddleUp(Paddle paddle){
-        pongModel.setPaddlePosY(paddle, paddle.getPosY()-pongModel.getHeight()/50);
+        pongModel.setPaddlePosY(paddle, paddle.getPosY()-pongModel.getHeight()/20);
     }
 
     public void movePaddleDown(Paddle paddle){
-        pongModel.setPaddlePosY(paddle, paddle.getPosY()+pongModel.getHeight()/50);
+        pongModel.setPaddlePosY(paddle, paddle.getPosY()+pongModel.getHeight()/20);
     }
 }

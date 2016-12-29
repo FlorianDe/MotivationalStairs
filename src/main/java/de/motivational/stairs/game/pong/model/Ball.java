@@ -10,6 +10,18 @@ public class Ball {
     float velocityY;
     float radius;
 
+    public Ball() {
+
+    }
+
+    public Ball(Ball ball) {
+        this.posX = ball.posX;
+        this.posY = ball.posY;
+        this.velocityX = ball.velocityX;
+        this.velocityY = ball.velocityY;
+        this.radius = ball.radius;
+    }
+
     public float getPosX() {
         return posX;
     }

@@ -24,7 +24,7 @@ public class PongModel {
 
         this.pointsLeft = 0;
         this.pointsRight = 0;
-        this.tries = 4;
+        this.tries = 10;
 
         this.ball = new Ball();
         this.ball.setRadius(10);

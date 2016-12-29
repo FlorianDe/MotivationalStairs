@@ -72,20 +72,8 @@ public class AppPrincipalFrame implements GameEndedEventListener {
 
         currentGame = new PongGame();
         currentGame.setGameFrame(this.beamerFrame);
-        String PL_MOV_UP = "pl_mov_up";
-        String PL_MOV_DOWN = "pl_mov_down";
-        String PR_MOV_UP = "pr_mov_up";
-        String PR_MOV_DOWN = "pr_mov_down";
 
 
-        beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), PL_MOV_UP);
-        beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), PL_MOV_DOWN);
-        beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), PR_MOV_UP);
-        beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), PR_MOV_DOWN);
-        beamerFrame.getCanvas().getActionMap().put(PL_MOV_UP, new MoveAction(currentGame.getPongController().getPongModel().getPaddleLeft(),1));
-        beamerFrame.getCanvas().getActionMap().put(PL_MOV_DOWN, new MoveAction(currentGame.getPongController().getPongModel().getPaddleLeft(),-1));
-        beamerFrame.getCanvas().getActionMap().put(PR_MOV_UP, new MoveAction(currentGame.getPongController().getPongModel().getPaddleRight(),1));
-        beamerFrame.getCanvas().getActionMap().put(PR_MOV_DOWN, new MoveAction(currentGame.getPongController().getPongModel().getPaddleRight(),-1));
         */
         //currentGame.start();
     }
@@ -166,6 +154,20 @@ public class AppPrincipalFrame implements GameEndedEventListener {
                 this.currentGame = new PongGame(this, ticket);
                 this.currentGame.setGameFrame(this.beamerFrame);
                 // TODO BIND CONTROLS
+                String PL_MOV_UP = "pl_mov_up";
+                String PL_MOV_DOWN = "pl_mov_down";
+                String PR_MOV_UP = "pr_mov_up";
+                String PR_MOV_DOWN = "pr_mov_down";
+
+
+                beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), PL_MOV_UP);
+                beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), PL_MOV_DOWN);
+                beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), PR_MOV_UP);
+                beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), PR_MOV_DOWN);
+                beamerFrame.getCanvas().getActionMap().put(PL_MOV_UP, new MoveAction(((PongGame)currentGame).getPongController().getPongModel().getPaddleLeft(),1));
+                beamerFrame.getCanvas().getActionMap().put(PL_MOV_DOWN, new MoveAction(((PongGame)currentGame).getPongController().getPongModel().getPaddleLeft(),-1));
+                beamerFrame.getCanvas().getActionMap().put(PR_MOV_UP, new MoveAction(((PongGame)currentGame).getPongController().getPongModel().getPaddleRight(),1));
+                beamerFrame.getCanvas().getActionMap().put(PR_MOV_DOWN, new MoveAction(((PongGame)currentGame).getPongController().getPongModel().getPaddleRight(),-1));
                 this.currentGame.start();
                 break;
         }
@@ -190,14 +192,14 @@ public class AppPrincipalFrame implements GameEndedEventListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            /*
+
             if(direction==1){
-                currentGame.getPongController().movePaddleUp(paddle);
+                ((PongGame)currentGame).getPongController().movePaddleUp(paddle);
             }
             else if(direction==-1){
-                currentGame.getPongController().movePaddleDown(paddle);
+                ((PongGame)currentGame).getPongController().movePaddleDown(paddle);
             }
-            */
+
         }
     }
 }
