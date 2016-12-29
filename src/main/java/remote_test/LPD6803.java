@@ -2,12 +2,6 @@ package remote_test;
 
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.wiringpi.Serial;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by Florian on 27.12.2016.
@@ -44,12 +38,11 @@ public class LPD6803 {
         this.mode = SendMode.START;
     }
 
-    public boolean isDone() {
-        return this.mode == SendMode.DONE;
-    }
-
     public void show() {
         this.mode = SendMode.START;
+        while(this.mode != SendMode.DONE) {
+            this.writeLeds();
+        }
     }
     public void writeLeds() {
         switch (this.mode) {
@@ -123,11 +116,19 @@ public class LPD6803 {
         this.blankCounter++;
     }
 
-    public void setPixelColor(int position, byte r, byte g, byte b) {
+    public void setPixelColor(int position, byte b, byte g, byte r) {
+        this.setPixelColor(position, b, g, r, true);
+    }
+
+    public void setPixelColor(int position, byte b, byte g, byte r, boolean direct) {
         int data;
 
         if( position >= this.pixels.length)
             return;
+
+        r = (byte)Math.floor((float)r / 2);
+        g = (byte)Math.floor((float)g / 2);
+        b = (byte)Math.floor((float)b / 2);
 
         data = g & 0x1F;
         data <<= 5;
@@ -137,5 +138,9 @@ public class LPD6803 {
         data |= 0x8000;
 
         this.pixels[position] = data;
+
+        if(direct) {
+            this.show();
+        }
     }
 }

@@ -8,6 +8,8 @@ import de.motivational.stairs.database.entity.GameEntity;
 import de.motivational.stairs.database.service.GameService;
 import de.motivational.stairs.database.service.HighscoreService;
 import de.motivational.stairs.rest.dto.GameDto;
+import de.motivational.stairs.rest.dto.GameStartDto;
+import de.motivational.stairs.rest.dto.GameStartResponseDto;
 import de.motivational.stairs.rest.dto.HighscoreDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +50,12 @@ public class GameServiceREST {
     }
 
     @RequestMapping(value="/start", method= RequestMethod.POST)
-    @ResponseBody void start(@RequestBody GameDto gameDto) {
-        //TODO LOGIC FOR GAME START!!!
+    @ResponseBody GameStartResponseDto start(@RequestBody GameStartDto gameDto) {
+        return gameService.startGame(gameDto);
+    }
+
+    @RequestMapping(value="/redeem/{ticketId}", method= RequestMethod.GET)
+    @ResponseBody void redeem(@PathVariable String ticketId) {
+        gameService.redeemTicket(ticketId);
     }
 }

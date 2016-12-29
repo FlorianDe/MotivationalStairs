@@ -44,14 +44,20 @@ public class PongController extends GameTimeStepController {
                 && (pongModel.getPaddleLeft().getPosY()<=b.getPosY()
                     && b.getPosY()<=pongModel.getPaddleLeft().getPosY()+pongModel.getPaddleLeft().getHeight())){
             b.setVelocityX(b.getVelocityX()*-1);
+            this.pongModel.incrementPointsLeft(1);
         } else if(b.getPosX()>=pongModel.getPaddleRight().getPosX()-pongModel.getPaddleRight().getWidth()+b.getRadius()
                 && (pongModel.getPaddleRight().getPosY()<=b.getPosY()
                 && b.getPosY()<=pongModel.getPaddleRight().getPosY()+pongModel.getPaddleRight().getHeight())){
             b.setVelocityX(b.getVelocityX()*-1);
+            this.pongModel.incrementPointsRight(1);
         } else if (b.getPosX() >= pongModel.getWidth() - b.getRadius()) {
             b.setVelocityX(b.getVelocityX()*-1);
+            this.pongModel.incrementPointsLeft(5);
+            this.pongModel.decrementTries();
         } else if (b.getPosX() <= b.getRadius()) {
             b.setVelocityX(b.getVelocityX()*-1);
+            this.pongModel.incrementPointsRight(5);
+            this.pongModel.decrementTries();
         } else if (b.getPosY() >= pongModel.getHeight() - b.getRadius()) {
             b.setVelocityY(b.getVelocityY()*-1);
         } else if (b.getPosY() <= b.getRadius()) {

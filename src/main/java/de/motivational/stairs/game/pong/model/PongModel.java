@@ -1,5 +1,7 @@
 package de.motivational.stairs.game.pong.model;
 
+import java.util.Random;
+
 /**
  * Created by Florian on 13.11.2016.
  */
@@ -10,18 +12,23 @@ public class PongModel {
     private Paddle paddleRight;
     private float width;
     private float height;
+    private int pointsLeft;
+    private int pointsRight;
+    private int tries;
+    Random random;
 
     public PongModel(int width, int height){
+        random = new Random();
         this.width = width;
         this.height = height;
 
-        this.ball = new Ball();
-        this.ball.setPosX(width/2);
-        this.ball.setPosY(height/2);
-        this.ball.setRadius(10);
-        this.ball.setVelocityY(-100);
-        this.ball.setVelocityX(150);
+        this.pointsLeft = 0;
+        this.pointsRight = 0;
+        this.tries = 4;
 
+        this.ball = new Ball();
+        this.ball.setRadius(10);
+        this.centerBall();
         this.paddleLeft = new Paddle();
         this.paddleLeft.setHeight(100);
         this.paddleLeft.setWidth(20);
@@ -32,6 +39,18 @@ public class PongModel {
         this.paddleRight.setWidth(20);
         this.paddleRight.setPosY((height-this.paddleRight.getHeight())/2);
         this.paddleRight.setPosX(width-this.paddleRight.getWidth());
+    }
+
+    public void centerBall() {
+        this.ball.setPosX(width/2);
+        this.ball.setPosY(height/2);
+
+        this.ball.setVelocityY((float) ( randomVelocity(150, 300) * Math.signum(Math.random()-0.5)));
+        this.ball.setVelocityX((float) ( randomVelocity(150, 300) * Math.signum(Math.random()-0.5)));
+    }
+
+    public int randomVelocity(int min, int max) {
+        return this.random.nextInt((max - min) + 1) + min;
     }
 
     public Ball getBall() {
@@ -82,5 +101,38 @@ public class PongModel {
         } else {
             paddle.setPosY(posY);
         }
+    }
+
+    public int getPointsLeft() {
+        return pointsLeft;
+    }
+
+    public void setPointsLeft(int pointsLeft) {
+        this.pointsLeft = pointsLeft;
+    }
+
+    public int getPointsRight() {
+        return pointsRight;
+    }
+
+    public void setPointsRight(int pointsRight) {
+        this.pointsRight = pointsRight;
+    }
+
+    public void incrementPointsLeft(int count) {
+        this.pointsLeft += count;
+    }
+
+    public void incrementPointsRight(int count) {
+        this.pointsRight += count;
+    }
+
+    public void decrementTries() {
+        this.centerBall();
+        this.tries--;
+    }
+
+    public boolean triesLeft() {
+        return this.tries > 0;
     }
 }

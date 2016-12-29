@@ -1,15 +1,24 @@
 package de.motivational.stairs.game.pong;
 
+import de.motivational.stairs.database.entity.GameEntity;
+import de.motivational.stairs.database.entity.UserEntity;
+import de.motivational.stairs.game.general.BeamerGameFrame;
+import de.motivational.stairs.game.general.GameTicket;
 import de.motivational.stairs.game.general.IBeamerFrame;
+import de.motivational.stairs.game.general.timestep.GameEndedEventListener;
+import de.motivational.stairs.game.general.timestep.GameResult;
 import de.motivational.stairs.game.general.timestep.GameTimeStep;
 import de.motivational.stairs.game.pong.controller.PongController;
 import de.motivational.stairs.game.pong.model.PongModel;
 import de.motivational.stairs.game.pong.view.PongView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Florian on 13.11.2016.
  */
-public class PongGame extends GameTimeStep{
+public class PongGame extends GameTimeStep {
     private PongModel pongModel;
     private PongController pongController;
     private PongView pongView;
@@ -19,7 +28,9 @@ public class PongGame extends GameTimeStep{
         return pongController;
     }
 
-    public PongGame(){
+    public PongGame(GameEndedEventListener gameController, GameTicket ticket){
+        super(gameController, ticket);
+
         this.pongModel = new PongModel(800,600);
         this.pongController = new PongController(this.pongModel);
         this.pongView = new PongView(this.pongController);
@@ -28,6 +39,9 @@ public class PongGame extends GameTimeStep{
     @Override
     protected void update(float elapsedTime) {
         pongController.update(elapsedTime);
+        if(!pongModel.triesLeft()) {
+            quitGame();
+        }
     }
 
     @Override
@@ -45,15 +59,20 @@ public class PongGame extends GameTimeStep{
         super.start(1 / 60f, 5);
     }
 
-
     public IBeamerFrame getGameFrame() {
         return gameFrame;
     }
+
+    @Override
     public void setGameFrame(IBeamerFrame gameFrame) {
         this.gameFrame = gameFrame;
     }
-    public static void main(String[] args){
-        new PongGame().start();
-    }
 
+    @Override
+    protected List<GameResult> getResults() {
+        ArrayList<GameResult> results = new ArrayList<>();
+        results.add(new GameResult(this.ticket.getUsers().get(0), this.pongModel.getPointsLeft()));
+        results.add(new GameResult(this.ticket.getUsers().get(1), this.pongModel.getPointsRight()));
+        return results;
+    }
 }

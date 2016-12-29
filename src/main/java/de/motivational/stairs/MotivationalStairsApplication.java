@@ -32,11 +32,6 @@ public class MotivationalStairsApplication  extends WebMvcAutoConfiguration {
 		} else {
 			StairsTransformFrame transformFrame = new StairsTransformFrame();
 		}
-
-
-//*/
-
-		//SpringApplication.run(MotivationalStairsApplication.class, args);
 	}
 
 }

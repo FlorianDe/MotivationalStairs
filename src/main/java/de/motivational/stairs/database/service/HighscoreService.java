@@ -61,6 +61,18 @@ public class HighscoreService {
         return false;
     }
 
+    public boolean updateHighscore(int highscore, int gameId, int userId) {
+        HighscoreEntity score = this.highscoreRepository.findOneByUserIdAndGameId(userId, gameId);
+        if(score == null) {
+            create(highscore, gameId, userId);
+            return false;
+        } else {
+            score.setHighscore(score.getHighscore()+highscore);
+            this.highscoreRepository.save(score);
+            return true;
+        }
+    }
+
     public void delete(int highscoreId) {
         highscoreRepository.delete(highscoreId);
     }
