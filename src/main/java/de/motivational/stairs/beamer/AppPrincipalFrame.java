@@ -176,7 +176,7 @@ public class AppPrincipalFrame implements GameEndedEventListener {
     @Override
     public void gameEnded(GameEntity game, List<GameResult> results) {
         for(GameResult result: results) {
-            this.highscoreService.updateHighscore(result.getScore(), game.getGameId(), result.getUser().getUserId());
+            this.highscoreService.create(result.getScore(), game.getGameId(), result.getUser().getUserId());
         }
 
         this.dispatchGameQueue();

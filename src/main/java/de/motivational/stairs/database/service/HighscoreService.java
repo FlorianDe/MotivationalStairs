@@ -4,8 +4,6 @@ import de.motivational.stairs.database.entity.GameEntity;
 import de.motivational.stairs.database.entity.HighscoreEntity;
 import de.motivational.stairs.database.entity.UserEntity;
 import de.motivational.stairs.rest.dto.HighscoreDto;
-import de.motivational.stairs.rest.dto.UserDto;
-import de.motivational.stairs.rest.dto.setup.BeamerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +24,13 @@ public class HighscoreService {
     @Autowired
     private UserRepository userRepository;
 
+    public Optional<HighscoreDto> findAllByUserIdAndGameId(int userId, int gameId) {
+        return highscoreRepository.findOneByUserIdAndGameId(userId, gameId);
+    }
+
+    public Collection<HighscoreDto> findAllByGameId(int gameId) {
+        return highscoreRepository.findListByGameId(gameId);
+    }
 
     public Collection<HighscoreEntity> findAll() {
         return highscoreRepository.findAll();
@@ -36,7 +41,7 @@ public class HighscoreService {
     }
 
     public boolean create(HighscoreDto highscoreDto) {
-        return create(highscoreDto.getHighscore(), highscoreDto.getGameId(), highscoreDto.getUserId());
+        return create((int)highscoreDto.getHighscore(), highscoreDto.getGameId(), highscoreDto.getUserId());
     }
 
     public boolean create(int highscore, int gameId) {
@@ -61,6 +66,7 @@ public class HighscoreService {
         return false;
     }
 
+    /*
     public boolean updateHighscore(int highscore, int gameId, int userId) {
         HighscoreEntity score = this.highscoreRepository.findOneByUserIdAndGameId(userId, gameId);
         if(score == null) {
@@ -72,6 +78,7 @@ public class HighscoreService {
             return true;
         }
     }
+    */
 
     public void delete(int highscoreId) {
         highscoreRepository.delete(highscoreId);

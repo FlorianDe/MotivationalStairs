@@ -12,7 +12,7 @@ public class HighscoreDto {
     private int highscoreId;
 
     @JsonProperty("highscore")
-    private int highscore;
+    private long highscore;
 
     @JsonProperty("created")
     private Timestamp created;
@@ -23,7 +23,34 @@ public class HighscoreDto {
     @JsonProperty("userId")
     private int userId;
 
+    @JsonProperty("userName")
+    private String userName;
+
     public HighscoreDto(){}
+
+    public HighscoreDto(Long highscore, Integer gameId, Integer userId) {
+        if(highscore!=null) {
+            this.highscore = highscore;
+        }
+        if(gameId!=null) {
+            this.gameId = gameId;
+        }
+        if(userId!=null) {
+            this.userId = userId;
+        }
+    }
+
+    public HighscoreDto(Long highscore, Integer gameId, String userName) {
+        if(highscore!=null) {
+            this.highscore = highscore;
+        }
+        if(gameId!=null) {
+            this.gameId = gameId;
+        }
+        if(userName!=null) {
+            this.userName = userName;
+        }
+    }
 
     public HighscoreDto(HighscoreEntity highscoreEntity) {
         this.highscoreId = highscoreEntity.getHighscoreId();
@@ -41,7 +68,7 @@ public class HighscoreDto {
         this.highscoreId = highscoreId;
     }
 
-    public int getHighscore() {
+    public long getHighscore() {
         return highscore;
     }
 

@@ -43,7 +43,7 @@ dependencies {
 
 	//thymeleaf templating engine
 	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
-	//compile('org.springframework.boot:spring-boot-starter-websocket')
+	compile('org.springframework.boot:spring-boot-starter-websocket')
 
 	//swagger documentation support
 	compile("io.springfox:springfox-swagger-ui:2.5.0")
