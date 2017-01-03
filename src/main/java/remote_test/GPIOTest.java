@@ -61,7 +61,7 @@ public class GPIOTest {
         GpioPinDigitalOutput clockPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "clock", PinState.LOW);
         LPD6803 ledStrip = new LPD6803(dataPin, clockPin, 2);
 
-        myButton.setDebounce(120);
+        //myButton.setDebounce(120);
         // create and register gpio pin listener
         myButton.addListener(new GpioPinListenerDigital() {
             @Override
@@ -70,7 +70,14 @@ public class GPIOTest {
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
 
                 if(event.getState().isLow()) {
-                    ledStrip.setPixelColor(0, (byte)(((Math.random() + 0) / 1) * 255), (byte)(((Math.random() + 0) / 1) * 255), (byte)(((Math.random() + 0) / 1) * 255));
+                    byte r = (byte)(((Math.random() + 0) / 1) * 255);
+                    byte g = (byte)(((Math.random() + 0) / 1) * 255);
+                    byte b = (byte)(((Math.random() + 0) / 1) * 255);
+                    r = (byte)0;
+                    g = (byte)0;
+                    b = (byte)126;
+                    ledStrip.setPixelColor(0, r, g, b);
+                    System.out.printf("%d, %d, %d\n", r, g, b);
                 } else {
                     ledStrip.setPixelColor(0, (byte)0, (byte)0, (byte)0);
                 }
