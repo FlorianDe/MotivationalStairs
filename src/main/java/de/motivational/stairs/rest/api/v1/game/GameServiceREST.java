@@ -38,7 +38,6 @@ public class GameServiceREST {
         return gameDto.isPresent()?gameDto.get():null;
     }
 
-
     @RequestMapping(value="/", method= RequestMethod.POST)
     @ResponseBody Optional<GameEntity> create(@RequestBody GameDto gameDto) {
         return gameService.create(gameDto);
@@ -55,7 +54,18 @@ public class GameServiceREST {
     }
 
     @RequestMapping(value="/redeem/{ticketId}", method= RequestMethod.GET)
-    @ResponseBody void redeem(@PathVariable String ticketId) {
-        gameService.redeemTicket(ticketId);
+    @ResponseBody boolean redeem(@PathVariable String ticketId) {
+        return gameService.redeemTicket(ticketId);
     }
+
+    @RequestMapping(value="/abort/{ticketId}", method= RequestMethod.GET)
+    @ResponseBody void abort(@PathVariable String ticketId) {
+        gameService.abortTicket(ticketId);
+    }
+
+    @RequestMapping(value="/queue", method= RequestMethod.GET)
+    @ResponseBody String[] getPlayerQueue() {
+        return this.gameService.getPlayerQueue();
+    }
+
 }

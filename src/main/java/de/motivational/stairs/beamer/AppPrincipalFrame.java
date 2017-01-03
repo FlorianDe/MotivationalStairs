@@ -15,6 +15,7 @@ import de.motivational.stairs.game.general.timestep.GameTimeStep;
 import de.motivational.stairs.game.pong.PongGame;
 import de.motivational.stairs.game.pong.model.Paddle;
 import de.motivational.stairs.rest.dto.GameStartResponseDto;
+import de.motivational.stairs.socket.WebSocketHandler;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Florian on 11.11.2016.
@@ -34,7 +36,7 @@ public class AppPrincipalFrame implements GameEndedEventListener {
 
     GameTimeStep currentGame;
     StairsTransformFrame transformFrame;
-    Queue<GameTicket> gameTickets;
+    ConcurrentLinkedQueue<GameTicket> gameTickets;
     Thread dispatcher;
 
     @Autowired
@@ -43,10 +45,13 @@ public class AppPrincipalFrame implements GameEndedEventListener {
     @Autowired
     HighscoreService highscoreService;
 
+    @Autowired
+    WebSocketHandler socketHandler;
+
     Logger logger;
 
     public AppPrincipalFrame() {
-        this.gameTickets = new LinkedList<GameTicket>();
+        this.gameTickets = new ConcurrentLinkedQueue<GameTicket>();
 
         this.logger = Logger.getLogger(AppPrincipalFrame.class);
         this.init();
@@ -67,31 +72,13 @@ public class AppPrincipalFrame implements GameEndedEventListener {
 
     private void init(){
         beamerFrame = new BeamerGameFrame(800,600);
-
-        /*
-
-        currentGame = new PongGame();
-        currentGame.setGameFrame(this.beamerFrame);
-
-
-        */
-        //currentGame.start();
     }
 
     public GameStartResponseDto queueGame(GameEntity game, List<UserEntity> users) {
         GameTicket ticket = new GameTicket(game, users);
 
         GameStartResponseDto response = new GameStartResponseDto();
-        response.setUsersBefore(this.gameTickets.stream().map(t -> {
-            StringBuilder name = new StringBuilder();
-            for(int i = 0; i < t.getUsers().size(); i++) {
-                name.append(t.getUsers().get(i).getName());
-                if(i < t.getUsers().size() - 1) {
-                    name.append(" und ");
-                }
-            }
-            return name.toString();
-        }).toArray(String[]::new));
+        response.setUsersBefore(this.getPlayerQueue());
         response.setTicket(ticket.getTicket());
 
         this.gameTickets.add(ticket);
@@ -118,6 +105,7 @@ public class AppPrincipalFrame implements GameEndedEventListener {
             public void run() {
                 try {
                     while(gameTickets.size() > 0) {
+                        socketHandler.notifyUsers(gameTickets.peek().getUsers(), WebSocketHandler.EVENT.NEXT_TICKET, "");
                         Thread.sleep(8000);
                         if(currentGame == null || !currentGame.isRunning()) {
                             logger.info(String.format("Ticket %s was not redeemed, queueing next ticket", gameTickets.peek().getTicket()));
@@ -136,12 +124,16 @@ public class AppPrincipalFrame implements GameEndedEventListener {
         return t;
     }
 
-    public void redeemTicket(String ticket) {
+    public boolean redeemTicket(String ticket) {
         if(this.gameTickets.size() > 0 &&
                 (this.currentGame == null || !this.currentGame.isRunning()) &&
                 this.gameTickets.peek().getTicket().equals(ticket)) {
             this.logger.info(String.format("Starting game with ticket %s", ticket));
+            socketHandler.notifyUsers(WebSocketHandler.EVENT.QUEUE_CHANGED, "");
             this.startNextGame();
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -180,7 +172,39 @@ public class AppPrincipalFrame implements GameEndedEventListener {
         this.dispatchGameQueue();
     }
 
-    class MoveAction extends AbstractAction{
+    private String getPlayerNames(GameTicket ticket) {
+        StringBuilder name = new StringBuilder();
+        for(int i = 0; i < ticket.getUsers().size(); i++) {
+            name.append(ticket.getUsers().get(i).getName());
+            if(i < ticket.getUsers().size() - 1) {
+                name.append(" und ");
+            }
+        }
+        return name.toString();
+    }
+
+    public String[] getPlayerQueue() {
+        return this.gameTickets.stream().map(t -> {
+            return this.getPlayerNames(t);
+        }).toArray(String[]::new);
+    }
+
+    public String[] getPlayerQueue(String ticketId) {
+        ArrayList<String> players = new ArrayList<>();
+        for(GameTicket ticket: this.gameTickets) {
+            if(ticket.getTicket().equals(ticketId))
+                break;
+            players.add(this.getPlayerNames(ticket));
+        }
+
+        return players.toArray(new String[players.size()]);
+    }
+
+    public void abortTicket(String ticketId) {
+        this.gameTickets.remove(new GameTicket(ticketId));
+    }
+
+    class MoveAction extends AbstractAction {
         Paddle paddle;
         int direction;
         MoveAction(Paddle paddle, int direction){

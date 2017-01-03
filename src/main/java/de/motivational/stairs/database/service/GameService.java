@@ -55,8 +55,16 @@ public class GameService {
         return principalFrame.queueGame(game, users);
     }
 
-    public void redeemTicket(String ticket) {
-        this.principalFrame.redeemTicket(ticket);
+    public boolean redeemTicket(String ticket) {
+        return this.principalFrame.redeemTicket(ticket);
+    }
+
+    public String[] getPlayerQueue() {
+        return this.principalFrame.getPlayerQueue();
+    }
+
+    public void abortTicket(String ticketId) {
+        this.principalFrame.abortTicket(ticketId);
     }
 }
 

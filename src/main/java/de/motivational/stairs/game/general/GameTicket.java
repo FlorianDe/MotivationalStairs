@@ -19,6 +19,12 @@ public class GameTicket {
     private final GameEntity game;
     private final List<UserEntity> users;
 
+    public GameTicket(String ticketId) {
+        this.ticket = ticketId;
+        this.game = null;
+        this.users = null;
+    }
+
     public GameTicket(GameEntity game, List<UserEntity> users) {
         MessageDigest md = null;
         this.game = game;
@@ -53,5 +59,20 @@ public class GameTicket {
 
     public List<UserEntity> getUsers() {
         return users;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GameTicket that = (GameTicket) o;
+
+        return ticket.equals(that.ticket);
+    }
+
+    @Override
+    public int hashCode() {
+        return ticket.hashCode();
     }
 }
