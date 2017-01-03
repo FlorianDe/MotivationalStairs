@@ -105,8 +105,6 @@ public class AppPrincipalFrame implements GameEndedEventListener {
 
     private void dispatchGameQueue() {
         this.logger.info("Starting redeem timer");
-        if(this.dispatcher != null)
-            System.out.println(this.dispatcher.isAlive());
 
         if(this.dispatcher == null || !this.dispatcher.isAlive()) {
             this.dispatcher = createDispatcher();
