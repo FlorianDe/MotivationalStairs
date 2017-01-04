@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Florian on 29.08.2016.
@@ -13,4 +14,6 @@ import java.util.List;
 @Repository
 interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Collection<UserEntity> findByUserIdIn(List<Integer> userIdList);
+
+    Optional<UserEntity> findOneByCookie(String cookie);
 }

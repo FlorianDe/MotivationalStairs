@@ -1,5 +1,7 @@
 package de.motivational.stairs.database.entity;
 
+import org.springframework.cglib.core.GeneratorStrategy;
+
 import javax.persistence.*;
 
 /**
@@ -24,6 +26,7 @@ public class UserEntity {
 
     @Id
     @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getUserId() {
         return userId;
     }

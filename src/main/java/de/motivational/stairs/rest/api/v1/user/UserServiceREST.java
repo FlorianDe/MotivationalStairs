@@ -4,8 +4,11 @@ package de.motivational.stairs.rest.api.v1.user;
  * Created by Florian on 11.07.2016.
  */
 
+import com.fasterxml.jackson.annotation.JsonView;
+import de.motivational.stairs.database.entity.UserEntity;
 import de.motivational.stairs.database.service.UserService;
 import de.motivational.stairs.rest.dto.UserDto;
+import de.motivational.stairs.rest.dto.View;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -13,6 +16,8 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 
@@ -29,6 +34,7 @@ public class UserServiceREST {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful retrieval of users details")}
     )
+    @JsonView(View.class)
     @RequestMapping(value="/", method= RequestMethod.GET)
     @ResponseBody UserDto[] getAll() {
         UserDto[] users = userService
@@ -38,18 +44,19 @@ public class UserServiceREST {
         return users;
     }
 
-
     @ApiOperation(value = "Returns user details", notes = "Returns a complete list of users details with a date of last modification.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful retrieval of user detail"),
             @ApiResponse(code = 404, message = "User with given username does not exist")}
     )
-    @RequestMapping(value="/{userId}", method= RequestMethod.GET)
-    @ResponseBody UserDto getOneById(@PathVariable int userId) {
-        Optional<UserDto> userDto = userService.findOne(userId).map(UserDto::new);
+    @RequestMapping(value="/me", method= RequestMethod.GET)
+    @JsonView(View.Extended.class)
+    @ResponseBody UserDto getOneByCookie(@CookieValue(value = "ms_user_c", defaultValue = "undefined") String cookie,
+                                         @RequestParam(required = false, defaultValue = "undefined", name = "uid") String paramCookie) {
+        String c = cookie.equals("undefined")?paramCookie:cookie;
+        Optional<UserDto> userDto = userService.findOneByCookie(c).map(UserDto::new);
         return userDto.isPresent()?userDto.get():null;
     }
-
 
     @ApiOperation(value = "Creates a new user", notes = "Creates a new user by the given name and cookie")
     @ApiResponses(value = {
@@ -57,8 +64,13 @@ public class UserServiceREST {
             @ApiResponse(code = 404, message = "Username already exists")}
     )
     @RequestMapping(value="/", method= RequestMethod.POST)
-    @ResponseBody boolean create(@RequestBody UserDto userDto) {
-        return userService.create(userDto).isPresent();
+    @ResponseBody UserDto create(@RequestBody UserDto userDto, HttpServletResponse response) {
+        Optional<UserEntity> user = userService.create(userDto);
+        if(user.isPresent()) {
+            response.addCookie(new Cookie("ms_user_c", user.get().getCookie()));
+            return new UserDto(user.get());
+        }
+        return null;
     }
 
 

@@ -1,6 +1,7 @@
 package de.motivational.stairs.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import de.motivational.stairs.database.entity.OffsetEntity;
 import de.motivational.stairs.database.entity.StairsEntity;
 import de.motivational.stairs.database.entity.UserEntity;
@@ -10,11 +11,14 @@ import de.motivational.stairs.database.entity.UserEntity;
  */
 public class UserDto {
     @JsonProperty("userId")
+    @JsonView(View.class)
     private int userId;
 
+    @JsonView(View.Extended.class)
     @JsonProperty("cookie")
     private String cookie;
 
+    @JsonView(View.class)
     @JsonProperty("name")
     private String name;
 

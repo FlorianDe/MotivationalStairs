@@ -53,6 +53,8 @@ dependencies {
 
 	compile("com.pi4j:pi4j-core:1.1")
 
+	compile 'com.google.guava:guava:20.0'
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
 	// JOGL / Java OPEN GL

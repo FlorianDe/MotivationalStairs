@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by Florian on 29.08.2016.
@@ -24,12 +25,19 @@ public class UserService {
         return Optional.ofNullable(userRepository.findOne(userId));
     }
 
+    public Optional<UserEntity> findOneByCookie(String cookie) {
+        return userRepository.findOneByCookie(cookie);
+    }
+
     public  Optional<UserEntity> create(UserDto userDto){
         Optional<UserEntity> resUser = Optional.empty();
-        if(userDto.getName() != null && !userDto.getName().isEmpty() && userDto.getCookie() != null && !userDto.getCookie().isEmpty()) {
+        if(userDto.getName() != null && !userDto.getName().isEmpty()) {
             UserEntity user = new UserEntity();
             user.setName(userDto.getName());
-            user.setCookie(userDto.getCookie());
+
+            final String cookie = UUID.randomUUID().toString();
+            user.setCookie(cookie);
+
             resUser = Optional.ofNullable(userRepository.save(user));
         }
         return resUser;

@@ -14,32 +14,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan
 //@EnableWebMvc
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/").allowedOrigins("http://localhost:9000");
+        registry.addMapping("/**").allowedOrigins("http://localhost:3000");
     }
 
-/*
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-            .addResourceHandler("/resources/**").addResourceLocations("classpath:/resources/")
-        ;
-    }
-    /
-
-    /*
-    @Override
-    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }
-
-    @Bean
-    public InternalResourceViewResolver viewResolver() {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/templates/");
-        resolver.setSuffix(".html");
-        return resolver;
-    }
-    */
 }
