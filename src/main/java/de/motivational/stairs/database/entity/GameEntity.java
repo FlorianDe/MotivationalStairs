@@ -10,6 +10,10 @@ import javax.persistence.*;
 public class GameEntity {
     private String name;
     private int gameId;
+    private String subtitle;
+    private String description;
+    private int gameModes;
+    private String imagePath;
 
     @Basic
     @Column(name = "name")
@@ -58,5 +62,45 @@ public class GameEntity {
         sb.append(", gameId=").append(gameId);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Basic
+    @Column(name = "subtitle")
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    @Basic
+    @Column(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Basic
+    @Column(name = "game_modes")
+    public int getGameModes() {
+        return gameModes;
+    }
+
+    public void setGameModes(int gameModes) {
+        this.gameModes = gameModes;
+    }
+
+    @Basic
+    @Column(name = "image_path")
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

@@ -32,7 +32,7 @@ class Game extends React.Component {
             {
                 id: 2,
                 name: "Tetris",
-                subtitle: "Stapel die blöcke...",
+                subtitle: "Stapel die Blöcke...",
                 description: "Tetris ist ein puzzleartiges Computerspiel des russischen Programmierers Alexei Paschitnow, " +
                 "der die erste spielbare Version am 6. Juni 1984 auf einem Elektronika-60-Rechner fertigstellte. " +
                 "Tetris gilt heute als Computerspiel-Klassiker, " +
