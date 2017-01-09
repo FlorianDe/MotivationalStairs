@@ -1,6 +1,6 @@
 package de.motivational.stairs.game.pong.controller;
 
-import de.motivational.stairs.game.general.timestep.GameTimeStepController;
+import de.motivational.stairs.game.general.timestep.listener.GameInputListener;
 import de.motivational.stairs.game.pong.model.Ball;
 import de.motivational.stairs.game.pong.model.Paddle;
 import de.motivational.stairs.game.pong.model.PongModel;
@@ -9,9 +9,69 @@ import de.motivational.stairs.game.pong.view.PongView;
 /**
  * Created by Florian on 13.11.2016.
  */
-public class PongController extends GameTimeStepController {
+public class PongController implements GameInputListener {
     PongModel pongModel;
     PongView pongView;
+
+    @Override
+    public void buttonL1Pressed() {
+        System.out.println("buttonL1Pressed");
+    }
+
+    @Override
+    public void buttonL1Released() {
+        System.out.println("buttonL1Released");
+    }
+
+    @Override
+    public void buttonL2Pressed() {
+
+    }
+
+    @Override
+    public void buttonL2Released() {
+
+    }
+
+    @Override
+    public void buttonL3Pressed() {
+
+    }
+
+    @Override
+    public void buttonL3Released() {
+
+    }
+
+    @Override
+    public void buttonR1Pressed() {
+        System.out.println("buttonR1Pressed");
+    }
+
+    @Override
+    public void buttonR1Released() {
+        System.out.println("buttonR1Released");
+    }
+
+    @Override
+    public void buttonR2Pressed() {
+
+    }
+
+    @Override
+    public void buttonR2Released() {
+
+    }
+
+    @Override
+    public void buttonR3Pressed() {
+
+    }
+
+    @Override
+    public void buttonR3Released() {
+
+    }
 
     enum BallState{
         IN_CENTER, HIT_LEFT_WALL, HIT_RIGHT_WALL, HIT_LEFT_PADLE, HIT_RIGHT_PADLE, HIT_TOP_WALL, HIT_BOTTOM_WALL;

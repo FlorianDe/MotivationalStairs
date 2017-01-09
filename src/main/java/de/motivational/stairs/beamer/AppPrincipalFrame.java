@@ -1,7 +1,6 @@
 package de.motivational.stairs.beamer;
 
 import de.motivational.stairs.database.entity.GameEntity;
-import de.motivational.stairs.database.entity.HighscoreEntity;
 import de.motivational.stairs.database.entity.UserEntity;
 import de.motivational.stairs.database.service.HighscoreService;
 import de.motivational.stairs.game.general.BeamerGameFrame;
@@ -9,7 +8,8 @@ import de.motivational.stairs.database.entity.BeamerSetupEntity;
 import de.motivational.stairs.database.service.BeamerSetupService;
 import de.motivational.stairs.beamer.opengl.StairsTransformFrame;
 import de.motivational.stairs.game.general.GameTicket;
-import de.motivational.stairs.game.general.timestep.GameEndedEventListener;
+import de.motivational.stairs.game.general.timestep.gpio.RaspberryPIHandler;
+import de.motivational.stairs.game.general.timestep.listener.GameEndedListener;
 import de.motivational.stairs.game.general.timestep.GameResult;
 import de.motivational.stairs.game.general.timestep.GameTimeStep;
 import de.motivational.stairs.game.pong.PongGame;
@@ -17,7 +17,6 @@ import de.motivational.stairs.game.pong.model.Paddle;
 import de.motivational.stairs.rest.dto.GameStartResponseDto;
 import de.motivational.stairs.socket.WebSocketHandler;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,13 +30,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Created by Florian on 11.11.2016.
  */
 @Component
-public class AppPrincipalFrame implements GameEndedEventListener {
-    BeamerGameFrame beamerFrame;
+public class AppPrincipalFrame implements GameEndedListener {
+    private BeamerGameFrame beamerFrame;
+    private GameTimeStep currentGame;
+    private RaspberryPIHandler gpioHandler; // SHOULD BE MORE GENERIC...but fuckit
 
-    GameTimeStep currentGame;
-    StairsTransformFrame transformFrame;
-    ConcurrentLinkedQueue<GameTicket> gameTickets;
-    Thread dispatcher;
+    private StairsTransformFrame transformFrame;
+    private ConcurrentLinkedQueue<GameTicket> gameTickets;
+    private Thread dispatcher;
 
     @Autowired
     BeamerSetupService beamerSetupService;
@@ -143,6 +143,8 @@ public class AppPrincipalFrame implements GameEndedEventListener {
             case 1:
                 this.currentGame = new PongGame(this, ticket);
                 this.currentGame.setGameFrame(this.beamerFrame);
+                this.gpioHandler = new RaspberryPIHandler(this.currentGame);
+
                 // TODO BIND CONTROLS
                 String PL_MOV_UP = "pl_mov_up";
                 String PL_MOV_DOWN = "pl_mov_down";

@@ -60,7 +60,7 @@ public class GPIOTest {
         GpioPinDigitalOutput dataPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "data", PinState.LOW);
         GpioPinDigitalOutput clockPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "clock", PinState.LOW);
         LPD6803 ledStrip = new LPD6803(dataPin, clockPin, 2);
-
+        ledStrip.setPixelColor(0, (byte)127, (byte)0, (byte)0);
         //myButton.setDebounce(120);
         // create and register gpio pin listener
         myButton.addListener(new GpioPinListenerDigital() {

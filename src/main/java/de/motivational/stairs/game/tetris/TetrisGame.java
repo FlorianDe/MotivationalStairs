@@ -2,7 +2,7 @@ package de.motivational.stairs.game.tetris;
 
 import de.motivational.stairs.game.general.GameTicket;
 import de.motivational.stairs.game.general.IBeamerFrame;
-import de.motivational.stairs.game.general.timestep.GameEndedEventListener;
+import de.motivational.stairs.game.general.timestep.listener.GameEndedListener;
 import de.motivational.stairs.game.general.timestep.GameResult;
 import de.motivational.stairs.game.general.timestep.GameTimeStep;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class TetrisGame  extends GameTimeStep {
 
 
-    public TetrisGame(GameEndedEventListener gameController, GameTicket ticket) {
+    public TetrisGame(GameEndedListener gameController, GameTicket ticket) {
         super(gameController, ticket);
     }
 

@@ -1,11 +1,8 @@
 package de.motivational.stairs.game.pong;
 
-import de.motivational.stairs.database.entity.GameEntity;
-import de.motivational.stairs.database.entity.UserEntity;
-import de.motivational.stairs.game.general.BeamerGameFrame;
 import de.motivational.stairs.game.general.GameTicket;
 import de.motivational.stairs.game.general.IBeamerFrame;
-import de.motivational.stairs.game.general.timestep.GameEndedEventListener;
+import de.motivational.stairs.game.general.timestep.listener.GameEndedListener;
 import de.motivational.stairs.game.general.timestep.GameResult;
 import de.motivational.stairs.game.general.timestep.GameTimeStep;
 import de.motivational.stairs.game.pong.controller.PongController;
@@ -28,12 +25,13 @@ public class PongGame extends GameTimeStep {
         return pongController;
     }
 
-    public PongGame(GameEndedEventListener gameController, GameTicket ticket){
+    public PongGame(GameEndedListener gameController, GameTicket ticket){
         super(gameController, ticket);
 
         this.pongModel = new PongModel(800,600);
         this.pongController = new PongController(this.pongModel);
         this.pongView = new PongView(this.pongController);
+        this.gameInputListener = this.pongController; //fucked up but should work!
     }
 
     @Override

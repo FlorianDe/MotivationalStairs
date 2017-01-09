@@ -1,10 +1,11 @@
 package de.motivational.stairs.game.general.timestep;
 
-import de.motivational.stairs.database.entity.GameEntity;
-import de.motivational.stairs.game.general.BeamerGameFrame;
 import de.motivational.stairs.game.general.GameTicket;
 import de.motivational.stairs.game.general.IBeamerFrame;
 import de.motivational.stairs.game.general.IBeamerGame;
+import de.motivational.stairs.game.general.timestep.gpio.RaspberryPIHandler;
+import de.motivational.stairs.game.general.timestep.listener.GameEndedListener;
+import de.motivational.stairs.game.general.timestep.listener.GameInputListener;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -13,21 +14,22 @@ import java.util.List;
  * Created by Florian on 13.11.2016.
  */
 public abstract class GameTimeStep implements IBeamerGame {
-    private final GameEndedEventListener gameController;
     protected final GameTicket ticket;
+    private final GameEndedListener gameEndedListener;
+    protected GameInputListener gameInputListener;
     private boolean isRunning = false;
     private Logger logger;
 
-    public GameTimeStep(GameEndedEventListener gameController, GameTicket ticket) {
+    public GameTimeStep(GameEndedListener gameEndedListener, GameTicket ticket) {
         this.logger = Logger.getLogger(this.getClass());
-        this.gameController = gameController;
+        this.gameEndedListener = gameEndedListener;
         this.ticket = ticket;
     }
 
     protected void quitGame() {
         this.logger.info(String.format("Game with ticket %s ended", ticket.getTicket()));
         this.isRunning = false;
-        this.gameController.gameEnded(this.ticket.getGame(), this.getResults());
+        this.gameEndedListener.gameEnded(this.ticket.getGame(), this.getResults());
     }
 
     /* difference between time of update and world step time */
@@ -104,5 +106,12 @@ public abstract class GameTimeStep implements IBeamerGame {
     }
     protected abstract List<GameResult> getResults();
 
+    public GameEndedListener getGameEndedListener() {
+        return gameEndedListener;
+    }
+
+    public GameInputListener getGameInputListener() {
+        return gameInputListener;
+    }
 }
 
