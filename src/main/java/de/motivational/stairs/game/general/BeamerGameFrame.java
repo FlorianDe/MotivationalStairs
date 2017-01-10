@@ -18,6 +18,7 @@ public class BeamerGameFrame extends JFrame implements IBeamerFrame {
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         this.canvas = new JPanel();
+        //this.canvas.setFocusable(true);
         this.add(this.canvas);
 
         this.setVisible(true);

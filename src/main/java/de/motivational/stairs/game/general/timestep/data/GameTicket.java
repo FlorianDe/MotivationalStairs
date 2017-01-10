@@ -1,4 +1,4 @@
-package de.motivational.stairs.game.general;
+package de.motivational.stairs.game.general.timestep.data;
 
 import de.motivational.stairs.database.entity.GameEntity;
 import de.motivational.stairs.database.entity.UserEntity;
@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 /**

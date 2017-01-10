@@ -39,14 +39,15 @@ public class PongView {
         g2d.clearRect(0,0,bufferedImage.getWidth(),bufferedImage.getHeight());
 
         //NOT INTERPOLATED
-        g2d.setColor(Color.RED);
-        g2d.fillOval((int) (ball.getPosX() - ball.getRadius()), (int) (ball.getPosY() -  ball.getRadius()), (int)  ball.getRadius() * 2, (int)  ball.getRadius() * 2);
+        //g2d.setColor(Color.RED);
+        //g2d.fillOval((int) (ball.getPosX() - ball.getRadius()), (int) (ball.getPosY() -  ball.getRadius()), (int)  ball.getRadius() * 2, (int)  ball.getRadius() * 2);
         //INTERPOLATED!!!
-        g2d.setColor(Color.WHITE);
-        g2d.drawOval((int) (ball.getPosX() -  ball.getRadius() + interpolationTime * ball.getVelocityX()), (int) (ball.getPosY() -  ball.getRadius() + interpolationTime * ball.getVelocityY()), (int)  ball.getRadius() * 2, (int)  ball.getRadius() * 2);
+        g2d.setColor(Color.RED);
+        g2d.fillOval((int) (ball.getPosX() -  ball.getRadius() + interpolationTime * ball.getVelocityX()), (int) (ball.getPosY() -  ball.getRadius() + interpolationTime * ball.getVelocityY()), (int)  ball.getRadius() * 2, (int)  ball.getRadius() * 2);
 
-        g2d.drawRect((int)pl.getPosX(),(int)pl.getPosY(),(int)pl.getWidth(),(int)pl.getHeight());
-        g2d.drawRect((int)pr.getPosX(),(int)pr.getPosY(),(int)pr.getWidth(),(int)pr.getHeight());
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect((int)pl.getPosX(),(int)pl.getPosY(),(int)pl.getWidth(),(int)pl.getHeight());
+        g2d.fillRect((int)pr.getPosX(),(int)pr.getPosY(),(int)pr.getWidth(),(int)pr.getHeight());
 
 
         g2d.dispose();

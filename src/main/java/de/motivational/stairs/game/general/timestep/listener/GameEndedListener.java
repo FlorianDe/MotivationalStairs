@@ -1,7 +1,7 @@
 package de.motivational.stairs.game.general.timestep.listener;
 
 import de.motivational.stairs.database.entity.GameEntity;
-import de.motivational.stairs.game.general.timestep.GameResult;
+import de.motivational.stairs.game.general.timestep.data.GameResult;
 
 import java.util.List;
 

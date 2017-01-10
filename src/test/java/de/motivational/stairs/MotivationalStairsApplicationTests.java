@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class MotivationalStairsApplicationTests {
-
+/*
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -82,6 +82,6 @@ public class MotivationalStairsApplicationTests {
             highscoreService.create(highscore,gameId, users.get(0).getUserId());
         }
     }
-
+*/
 }
 

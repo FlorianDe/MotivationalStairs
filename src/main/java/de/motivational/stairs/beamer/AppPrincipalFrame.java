@@ -7,20 +7,24 @@ import de.motivational.stairs.game.general.BeamerGameFrame;
 import de.motivational.stairs.database.entity.BeamerSetupEntity;
 import de.motivational.stairs.database.service.BeamerSetupService;
 import de.motivational.stairs.beamer.opengl.StairsTransformFrame;
-import de.motivational.stairs.game.general.GameTicket;
+import de.motivational.stairs.game.general.timestep.data.GameTicket;
 import de.motivational.stairs.game.general.timestep.gpio.RaspberryPIHandler;
+import de.motivational.stairs.game.general.timestep.gpio.SwingHandler;
 import de.motivational.stairs.game.general.timestep.listener.GameEndedListener;
-import de.motivational.stairs.game.general.timestep.GameResult;
+import de.motivational.stairs.game.general.timestep.data.GameResult;
 import de.motivational.stairs.game.general.timestep.GameTimeStep;
 import de.motivational.stairs.game.pong.PongGame;
 import de.motivational.stairs.game.pong.model.Paddle;
 import de.motivational.stairs.rest.dto.GameStartResponseDto;
 import de.motivational.stairs.socket.WebSocketHandler;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.List;
@@ -33,8 +37,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class AppPrincipalFrame implements GameEndedListener {
     private BeamerGameFrame beamerFrame;
     private GameTimeStep currentGame;
-    private RaspberryPIHandler gpioHandler; // SHOULD BE MORE GENERIC...but fuckit
-
     private StairsTransformFrame transformFrame;
     private ConcurrentLinkedQueue<GameTicket> gameTickets;
     private Thread dispatcher;
@@ -47,6 +49,13 @@ public class AppPrincipalFrame implements GameEndedListener {
 
     @Autowired
     WebSocketHandler socketHandler;
+
+    @Autowired
+    SwingHandler swingHandler;
+
+    @Autowired
+    RaspberryPIHandler gpioHandler;
+
 
     Logger logger;
 
@@ -143,23 +152,13 @@ public class AppPrincipalFrame implements GameEndedListener {
             case 1:
                 this.currentGame = new PongGame(this, ticket);
                 this.currentGame.setGameFrame(this.beamerFrame);
-                this.gpioHandler = new RaspberryPIHandler(this.currentGame);
+                try {
+                    this.gpioHandler.setInputHandlers(this.currentGame);
+                } catch(Exception e){
+                    logger.log(Level.ERROR, e.getMessage());
+                }
+                this.swingHandler.setInputHandlers(this.currentGame, this.beamerFrame);
 
-                // TODO BIND CONTROLS
-                String PL_MOV_UP = "pl_mov_up";
-                String PL_MOV_DOWN = "pl_mov_down";
-                String PR_MOV_UP = "pr_mov_up";
-                String PR_MOV_DOWN = "pr_mov_down";
-
-
-                beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), PL_MOV_UP);
-                beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), PL_MOV_DOWN);
-                beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), PR_MOV_UP);
-                beamerFrame.getCanvas().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), PR_MOV_DOWN);
-                beamerFrame.getCanvas().getActionMap().put(PL_MOV_UP, new MoveAction(((PongGame)currentGame).getPongController().getPongModel().getPaddleLeft(),1));
-                beamerFrame.getCanvas().getActionMap().put(PL_MOV_DOWN, new MoveAction(((PongGame)currentGame).getPongController().getPongModel().getPaddleLeft(),-1));
-                beamerFrame.getCanvas().getActionMap().put(PR_MOV_UP, new MoveAction(((PongGame)currentGame).getPongController().getPongModel().getPaddleRight(),1));
-                beamerFrame.getCanvas().getActionMap().put(PR_MOV_DOWN, new MoveAction(((PongGame)currentGame).getPongController().getPongModel().getPaddleRight(),-1));
                 this.currentGame.start();
                 break;
         }
@@ -169,6 +168,15 @@ public class AppPrincipalFrame implements GameEndedListener {
     public void gameEnded(GameEntity game, List<GameResult> results) {
         for(GameResult result: results) {
             this.highscoreService.create(result.getScore(), game.getGameId(), result.getUser().getUserId());
+        }
+
+        //RECHTE PADLE VERLIERT, LINKE GPIO LEISTE ROT (NUN R)
+        if(results.size()>1){
+            if(results.get(0).getScore()>results.get(1).getScore()){
+                gpioHandler.setAllColorLedStripLeft(Color.red);
+            } else {
+                gpioHandler.setAllColorLedStripRight(Color.red);
+            }
         }
 
         this.dispatchGameQueue();
@@ -204,26 +212,5 @@ public class AppPrincipalFrame implements GameEndedListener {
 
     public void abortTicket(String ticketId) {
         this.gameTickets.remove(new GameTicket(ticketId));
-    }
-
-    class MoveAction extends AbstractAction {
-        Paddle paddle;
-        int direction;
-        MoveAction(Paddle paddle, int direction){
-            this.paddle = paddle;
-            this.direction = direction;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            if(direction==1){
-                ((PongGame)currentGame).getPongController().movePaddleUp(paddle);
-            }
-            else if(direction==-1){
-                ((PongGame)currentGame).getPongController().movePaddleDown(paddle);
-            }
-
-        }
     }
 }

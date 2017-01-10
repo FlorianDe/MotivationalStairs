@@ -3,6 +3,7 @@ package remote_test;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import de.motivational.stairs.game.general.timestep.gpio.LPD6803;
 
 /**
  * Created by Florian on 27.12.2016.
@@ -59,8 +60,10 @@ public class GPIOTest {
 
         GpioPinDigitalOutput dataPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "data", PinState.LOW);
         GpioPinDigitalOutput clockPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "clock", PinState.LOW);
-        LPD6803 ledStrip = new LPD6803(dataPin, clockPin, 2);
-        ledStrip.setPixelColor(0, (byte)127, (byte)0, (byte)0);
+        LPD6803 ledStrip = new LPD6803(dataPin, clockPin, 3);
+        ledStrip.setPixelColor(0, (byte)127, (byte)0, (byte)127);
+        ledStrip.setPixelColor(1, (byte)0, (byte)127, (byte)0);
+        ledStrip.setPixelColor(2, (byte)0, (byte)0, (byte)127);
         //myButton.setDebounce(120);
         // create and register gpio pin listener
         myButton.addListener(new GpioPinListenerDigital() {
@@ -93,11 +96,16 @@ public class GPIOTest {
         //ledStrip.setPixelColor(1, (byte)0, (byte)0, (byte)0);
 
         byte R = 0;
-        byte G = 0;
+        float G = 0;
         double num = 0;
         while(true) {
             //
-            Thread.sleep(1000);
+            G += 0.005;
+            Thread.sleep(1);
+            R = (byte)(((Math.sin(G)+1) / 2) * 64);
+            ledStrip.setPixelColor(0, (byte)R, (byte)0, (byte)0, false);
+            ledStrip.setPixelColor(1, (byte)0, (byte)R, (byte)0, false);
+            ledStrip.setPixelColor(2, (byte)0, (byte)0, (byte)R, true);
             //ledStrip.setPixelColor(0, (byte)255, (byte)0, (byte)0);
             /*
             ledStrip.writeLeds();

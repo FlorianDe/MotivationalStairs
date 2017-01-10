@@ -1,9 +1,9 @@
 package de.motivational.stairs.game.general.timestep;
 
-import de.motivational.stairs.game.general.GameTicket;
+import de.motivational.stairs.game.general.timestep.data.GameTicket;
 import de.motivational.stairs.game.general.IBeamerFrame;
 import de.motivational.stairs.game.general.IBeamerGame;
-import de.motivational.stairs.game.general.timestep.gpio.RaspberryPIHandler;
+import de.motivational.stairs.game.general.timestep.data.GameResult;
 import de.motivational.stairs.game.general.timestep.listener.GameEndedListener;
 import de.motivational.stairs.game.general.timestep.listener.GameInputListener;
 import org.apache.log4j.Logger;
@@ -19,21 +19,14 @@ public abstract class GameTimeStep implements IBeamerGame {
     protected GameInputListener gameInputListener;
     private boolean isRunning = false;
     private Logger logger;
+    /* difference between time of update and world step time */
+    protected float localTime = 0f;
 
     public GameTimeStep(GameEndedListener gameEndedListener, GameTicket ticket) {
         this.logger = Logger.getLogger(this.getClass());
         this.gameEndedListener = gameEndedListener;
         this.ticket = ticket;
     }
-
-    protected void quitGame() {
-        this.logger.info(String.format("Game with ticket %s ended", ticket.getTicket()));
-        this.isRunning = false;
-        this.gameEndedListener.gameEnded(this.ticket.getGame(), this.getResults());
-    }
-
-    /* difference between time of update and world step time */
-    protected float localTime = 0f;
 
     /**
      * Starts the game loop in a new Thread.
@@ -93,18 +86,22 @@ public abstract class GameTimeStep implements IBeamerGame {
         }
     }
 
-    public abstract void start();
+    protected void quitGame() {
+        this.logger.info(String.format("Game with ticket %s ended", ticket.getTicket()));
+        this.isRunning = false;
+        this.gameEndedListener.gameEnded(this.ticket.getGame(), this.getResults());
+    }
 
+    public abstract void start();
+    public abstract void setGameFrame(IBeamerFrame beamerFrame);
 
     protected abstract void render();
     protected abstract void update(float elapsedTime);
+    protected abstract List<GameResult> getResults();
 
-
-    public abstract void setGameFrame(IBeamerFrame beamerFrame);
     public boolean isRunning() {
         return this.isRunning;
     }
-    protected abstract List<GameResult> getResults();
 
     public GameEndedListener getGameEndedListener() {
         return gameEndedListener;

@@ -1,4 +1,4 @@
-package de.motivational.stairs.game.general.timestep;
+package de.motivational.stairs.game.general.timestep.data;
 
 import de.motivational.stairs.database.entity.UserEntity;
 

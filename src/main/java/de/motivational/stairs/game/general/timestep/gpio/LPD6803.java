@@ -1,4 +1,4 @@
-package remote_test;
+package de.motivational.stairs.game.general.timestep.gpio;
 
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
@@ -29,9 +29,9 @@ public class LPD6803 {
     public LPD6803(GpioPinDigitalOutput dataPin, GpioPinDigitalOutput clockPin, int count) {
         this.dataPin = dataPin;
         this.clockPin = clockPin;
-        this.pixels = new int[count];
+        this.pixels = new int[count+1];
 
-        for(int i = 0; i < count; i++) {
+        for(int i = 0; i < count+1; i++) {
             this.setPixelColor(i, (byte)0, (byte)0, (byte)0);
         }
 

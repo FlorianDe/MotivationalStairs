@@ -58,7 +58,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     public void notifyUser(UserEntity user, TextMessage message) {
         try {
-            this.connectionHandles.get(user).sendMessage(message);
+            WebSocketSession webSocketSession = this.connectionHandles.get(user);
+            if(webSocketSession!=null) {
+                webSocketSession.sendMessage(message);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

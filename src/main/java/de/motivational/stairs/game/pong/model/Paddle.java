@@ -8,6 +8,7 @@ public class Paddle {
     float posY;
     float height;
     float width;
+    float velocity;
 
     public float getPosX() {
         return posX;
@@ -39,5 +40,13 @@ public class Paddle {
 
     public void setWidth(float width) {
         this.width = width;
+    }
+
+    public float getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(float velocity) {
+        this.velocity = velocity;
     }
 }
