@@ -1,5 +1,7 @@
 package de.motivational.stairs.beamer;
 
+import de.motivational.stairs.MotivationalStairsApplication;
+import de.motivational.stairs.config.AppConfig;
 import de.motivational.stairs.database.entity.GameEntity;
 import de.motivational.stairs.database.entity.UserEntity;
 import de.motivational.stairs.database.service.HighscoreService;
@@ -21,6 +23,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -56,13 +59,13 @@ public class AppPrincipalFrame implements GameEndedListener {
     @Autowired
     RaspberryPIHandler gpioHandler;
 
+    @Autowired
+    AppConfig appConfig;
 
-    Logger logger;
+    Logger logger = Logger.getLogger(AppPrincipalFrame.class);;
 
-    public AppPrincipalFrame() {
+    public AppPrincipalFrame(@Autowired AppConfig appConfig) {
         this.gameTickets = new ConcurrentLinkedQueue<GameTicket>();
-
-        this.logger = Logger.getLogger(AppPrincipalFrame.class);
         this.init();
     }
 
