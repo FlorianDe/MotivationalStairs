@@ -62,7 +62,7 @@ public class AppPrincipalFrame implements GameEndedListener {
     @Autowired
     AppConfig appConfig;
 
-    Logger logger = Logger.getLogger(AppPrincipalFrame.class);;
+    Logger logger = Logger.getLogger(AppPrincipalFrame.class);
 
     public AppPrincipalFrame(@Autowired AppConfig appConfig) {
         this.gameTickets = new ConcurrentLinkedQueue<GameTicket>();
@@ -83,7 +83,7 @@ public class AppPrincipalFrame implements GameEndedListener {
     }
 
     private void init(){
-        beamerFrame = new BeamerGameFrame(800,600);
+       beamerFrame = new BeamerGameFrame();
     }
 
     public GameStartResponseDto queueGame(GameEntity game, List<UserEntity> users) {
@@ -153,7 +153,7 @@ public class AppPrincipalFrame implements GameEndedListener {
         GameTicket ticket = this.gameTickets.poll();
         switch(ticket.getGame().getGameId()) {
             case 1:
-                this.currentGame = new PongGame(this, ticket);
+                this.currentGame = new PongGame(this, ticket, appConfig);
                 this.currentGame.setGameFrame(this.beamerFrame);
                 try {
                     this.gpioHandler.setInputHandlers(this.currentGame);
@@ -215,5 +215,9 @@ public class AppPrincipalFrame implements GameEndedListener {
 
     public void abortTicket(String ticketId) {
         this.gameTickets.remove(new GameTicket(ticketId));
+    }
+
+    public GameTimeStep getCurrentGame() {
+        return currentGame;
     }
 }

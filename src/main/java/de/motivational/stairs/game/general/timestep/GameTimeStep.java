@@ -86,7 +86,7 @@ public abstract class GameTimeStep implements IBeamerGame {
         }
     }
 
-    protected void quitGame() {
+    public void quitGame() {
         this.logger.info(String.format("Game with ticket %s ended", ticket.getTicket()));
         this.isRunning = false;
         this.gameEndedListener.gameEnded(this.ticket.getGame(), this.getResults());

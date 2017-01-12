@@ -19,7 +19,7 @@ public class PongView {
         this.pongController = pongController;
         this.pongController.setPongView(this);
 
-        bufferedImage = new BufferedImage(800,600, BufferedImage.TYPE_INT_RGB);
+        bufferedImage = new BufferedImage((int)pongController.getPongModel().getWidth(), (int)pongController.getPongModel().getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);

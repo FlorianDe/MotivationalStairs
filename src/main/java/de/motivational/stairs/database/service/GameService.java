@@ -66,5 +66,9 @@ public class GameService {
     public void abortTicket(String ticketId) {
         this.principalFrame.abortTicket(ticketId);
     }
+
+    public void quitGame() {
+        principalFrame.getCurrentGame().quitGame();
+    }
 }
 

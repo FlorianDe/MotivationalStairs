@@ -1,5 +1,6 @@
 package de.motivational.stairs.game.pong;
 
+import de.motivational.stairs.config.AppConfig;
 import de.motivational.stairs.game.general.timestep.data.GameTicket;
 import de.motivational.stairs.game.general.IBeamerFrame;
 import de.motivational.stairs.game.general.timestep.listener.GameEndedListener;
@@ -25,10 +26,15 @@ public class PongGame extends GameTimeStep {
         return pongController;
     }
 
-    public PongGame(GameEndedListener gameController, GameTicket ticket){
+    public PongGame(GameEndedListener gameController, GameTicket ticket, AppConfig appConfig){
         super(gameController, ticket);
+        System.out.println("START GAME WITH CONFIG:"+appConfig);
 
-        this.pongModel = new PongModel(800,600);
+        this.pongModel = new PongModel(
+                appConfig.getGameConfig().gameWindowWidth,
+                appConfig.getGameConfig().gameWindowHeight,
+                appConfig.getPongConfig()
+        );
         this.pongController = new PongController(this.pongModel);
         this.pongView = new PongView(this.pongController);
         this.gameInputListener = this.pongController; //fucked up but should work!

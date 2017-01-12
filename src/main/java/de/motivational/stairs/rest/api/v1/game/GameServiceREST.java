@@ -43,6 +43,13 @@ public class GameServiceREST {
         return gameService.create(gameDto);
     }
 
+    //TODO TEST ONLY...
+    @RequestMapping(value="/quit", method= RequestMethod.POST)
+    @ResponseBody void create() {
+        gameService.quitGame();
+    }
+
+
     @RequestMapping(value="/{gameId}", method= RequestMethod.DELETE)
     @ResponseBody void delete(@PathVariable int gameId) {
         gameService.delete(gameId);

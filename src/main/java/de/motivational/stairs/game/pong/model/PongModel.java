@@ -1,5 +1,7 @@
 package de.motivational.stairs.game.pong.model;
 
+import de.motivational.stairs.config.PongConfig;
+
 import java.util.Random;
 
 /**
@@ -17,26 +19,29 @@ public class PongModel {
     private int tries;
     Random random;
 
-    public PongModel(int width, int height){
+    PongConfig pongConfig;
+
+    public PongModel(float width, float height, PongConfig pongConfig){
+        this.pongConfig = pongConfig;
         random = new Random();
         this.width = width;
         this.height = height;
 
         this.pointsLeft = 0;
         this.pointsRight = 0;
-        this.tries = 10;
+        this.tries = pongConfig.pongTries;
 
         this.ball = new Ball();
-        this.ball.setRadius(10);
+        this.ball.setRadius(pongConfig.pongBallRadius);
         this.centerBall();
         this.paddleLeft = new Paddle();
-        this.paddleLeft.setHeight(100);
-        this.paddleLeft.setWidth(20);
+        this.paddleLeft.setHeight(pongConfig.pongPaddleHeight);
+        this.paddleLeft.setWidth(pongConfig.pongPaddleWidth);
         this.paddleLeft.setPosY((height-this.paddleLeft.getHeight())/2);
 
         this.paddleRight = new Paddle();
-        this.paddleRight.setHeight(100);
-        this.paddleRight.setWidth(20);
+        this.paddleRight.setHeight(pongConfig.pongPaddleHeight);
+        this.paddleRight.setWidth(pongConfig.pongPaddleWidth);
         this.paddleRight.setPosY((height-this.paddleRight.getHeight())/2);
         this.paddleRight.setPosX(width-this.paddleRight.getWidth());
     }
@@ -45,8 +50,13 @@ public class PongModel {
         this.ball.setPosX(width/2);
         this.ball.setPosY(height/2);
 
-        this.ball.setVelocityY((float) ( randomVelocity(150, 300) * Math.signum(Math.random()-0.5)));
-        this.ball.setVelocityX((float) ( randomVelocity(150, 300) * Math.signum(Math.random()-0.5)));
+        double velX = random.nextDouble();
+        double angle = Math.signum(Math.random()-0.5) * random.nextDouble() * pongConfig.pongBallMaxAngle;
+        double velY = Math.toRadians(angle)*velX;
+        double eFak = Math.sqrt(Math.pow(velX,2)+Math.pow(velY,2));
+
+        this.ball.setVelocityY((float)(pongConfig.pongBallVelocity/eFak*velY));
+        this.ball.setVelocityX((float)(pongConfig.pongBallVelocity/eFak*velX));
     }
 
     public int randomVelocity(int min, int max) {

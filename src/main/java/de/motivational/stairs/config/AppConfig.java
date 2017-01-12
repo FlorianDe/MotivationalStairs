@@ -13,7 +13,7 @@ import javax.annotation.PostConstruct;
  * Created by Florian on 11.01.2017.
  */
 @Component
-public class AppConfig {
+public class AppConfig implements IUpdateable<AppConfig>{
     @Autowired
     private PongConfig pongConfig;
     @Autowired
@@ -21,6 +21,11 @@ public class AppConfig {
 
     public AppConfig(){
 
+    }
+
+    public void update(AppConfig appConfig){
+        this.pongConfig.update(appConfig.getPongConfig());
+        this.gameConfig.update(appConfig.getGameConfig());
     }
 
     public PongConfig getPongConfig() {
