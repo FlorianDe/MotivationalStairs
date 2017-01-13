@@ -1,11 +1,13 @@
 package de.motivational.stairs.game.general.timestep;
 
+import de.motivational.stairs.config.AppConfig;
 import de.motivational.stairs.game.general.timestep.data.GameTicket;
 import de.motivational.stairs.game.general.IBeamerFrame;
 import de.motivational.stairs.game.general.IBeamerGame;
 import de.motivational.stairs.game.general.timestep.data.GameResult;
 import de.motivational.stairs.game.general.timestep.listener.GameEndedListener;
 import de.motivational.stairs.game.general.timestep.listener.GameInputListener;
+import de.motivational.stairs.socket.WebSocketHandler;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -16,16 +18,20 @@ import java.util.List;
 public abstract class GameTimeStep implements IBeamerGame {
     protected final GameTicket ticket;
     private final GameEndedListener gameEndedListener;
+    private final AppConfig appConfig;
+    private final WebSocketHandler socketHandler;
     protected GameInputListener gameInputListener;
     private boolean isRunning = false;
     private Logger logger;
     /* difference between time of update and world step time */
     protected float localTime = 0f;
 
-    public GameTimeStep(GameEndedListener gameEndedListener, GameTicket ticket) {
+    public GameTimeStep(GameEndedListener gameEndedListener, GameTicket ticket, AppConfig appConfig, WebSocketHandler socketHandler) {
         this.logger = Logger.getLogger(this.getClass());
         this.gameEndedListener = gameEndedListener;
         this.ticket = ticket;
+        this.appConfig = appConfig;
+        this.socketHandler = socketHandler;
     }
 
     /**
@@ -42,8 +48,18 @@ public abstract class GameTimeStep implements IBeamerGame {
             }
             @Override
             public void run() {
-                long start = System.nanoTime();
+                int gameStart = appConfig.getGameConfig().gameStartSeconds;
+                for(int i = 0; i < gameStart; i++) {
+                    socketHandler.notifyUsers(ticket.getUsers(), WebSocketHandler.EVENT.GAME_STARTING, gameStart-i);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
+                socketHandler.notifyUsers(ticket.getUsers(), WebSocketHandler.EVENT.GAME_STARTING, 0);
+                long start = System.nanoTime();
                 while (isRunning) {
                     long now = System.nanoTime();
                     float elapsed = (now - start) / 1000000000f;

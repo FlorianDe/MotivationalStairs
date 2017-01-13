@@ -9,6 +9,7 @@ import de.motivational.stairs.game.general.timestep.GameTimeStep;
 import de.motivational.stairs.game.pong.controller.PongController;
 import de.motivational.stairs.game.pong.model.PongModel;
 import de.motivational.stairs.game.pong.view.PongView;
+import de.motivational.stairs.socket.WebSocketHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class PongGame extends GameTimeStep {
         return pongController;
     }
 
-    public PongGame(GameEndedListener gameController, GameTicket ticket, AppConfig appConfig){
-        super(gameController, ticket);
+    public PongGame(GameEndedListener gameController, GameTicket ticket, AppConfig appConfig, WebSocketHandler socketHandler){
+        super(gameController, ticket, appConfig, socketHandler);
         System.out.println("START GAME WITH CONFIG:"+appConfig);
 
         this.pongModel = new PongModel(

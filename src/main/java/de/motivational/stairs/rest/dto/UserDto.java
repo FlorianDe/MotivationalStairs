@@ -10,7 +10,7 @@ import de.motivational.stairs.database.entity.UserEntity;
  * Created by fdecker on 28.12.16.
  */
 public class UserDto {
-    @JsonProperty("userId")
+    @JsonProperty("id")
     @JsonView(View.class)
     private int userId;
 

@@ -12,8 +12,11 @@ public class GameStartResponseDto {
     @JsonProperty("ticket")
     private String ticket;
 
-    public GameStartResponseDto() {
+    @JsonProperty("gameId")
+    private int gameId;
 
+    public GameStartResponseDto(int gameId) {
+        this.gameId = gameId;
     }
 
     public String[] getUsersBefore() {
@@ -30,5 +33,9 @@ public class GameStartResponseDto {
 
     public void setTicket(String ticket) {
         this.ticket = ticket;
+    }
+
+    public int getGameId() {
+        return gameId;
     }
 }

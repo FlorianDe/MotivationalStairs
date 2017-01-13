@@ -25,21 +25,36 @@ public class UserService {
         return Optional.ofNullable(userRepository.findOne(userId));
     }
 
+    public Optional<UserEntity> findOne(String userId) {
+        try {
+            return findOne(Integer.parseInt(userId));
+        } catch(NumberFormatException nfException) {
+
+        }
+        return Optional.empty();
+    }
+
     public Optional<UserEntity> findOneByCookie(String cookie) {
         return userRepository.findOneByCookie(cookie);
     }
 
     public  Optional<UserEntity> create(UserDto userDto){
         Optional<UserEntity> resUser = Optional.empty();
-        if(userDto.getName() != null && !userDto.getName().isEmpty()) {
-            UserEntity user = new UserEntity();
+        UserEntity user = new UserEntity();
+
+        final String cookie = UUID.randomUUID().toString();
+        user.setCookie(cookie);
+        if(userDto.getName() == null || userDto.getName().isEmpty()) {
+            user.setName("");
+            user.setName(UUID.randomUUID().toString());
+            userRepository.save(user);
+            user.setName("Anonym_"+user.getUserId());
+            resUser = Optional.ofNullable(userRepository.save(user));
+        } else {
             user.setName(userDto.getName());
-
-            final String cookie = UUID.randomUUID().toString();
-            user.setCookie(cookie);
-
             resUser = Optional.ofNullable(userRepository.save(user));
         }
+
         return resUser;
     }
 
@@ -47,7 +62,8 @@ public class UserService {
         UserEntity user = userRepository.findOne(userDto.getUserId());
         if(user != null) {
             user.setCookie(userDto.getCookie());
-            userRepository.save(user);
+            user.setName(userDto.getName());
+            userRepository.saveAndFlush(user);
             return true;
         }
         return false;

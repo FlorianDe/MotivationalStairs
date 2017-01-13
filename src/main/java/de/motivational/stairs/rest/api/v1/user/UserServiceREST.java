@@ -9,6 +9,7 @@ import de.motivational.stairs.database.entity.UserEntity;
 import de.motivational.stairs.database.service.UserService;
 import de.motivational.stairs.rest.dto.UserDto;
 import de.motivational.stairs.rest.dto.View;
+import de.motivational.stairs.socket.WebSocketHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -29,6 +30,9 @@ public class UserServiceREST {
     @Autowired
     UserService userService;
 
+    @Autowired
+    WebSocketHandler webSocketHandler;
+
 
     @ApiOperation(value = "Returns users details", notes = "Returns a complete list of all users.")
     @ApiResponses(value = {
@@ -44,7 +48,21 @@ public class UserServiceREST {
         return users;
     }
 
-    @ApiOperation(value = "Returns user details", notes = "Returns a complete list of users details with a date of last modification.")
+    @ApiOperation(value = "Returns users details", notes = "Returns a complete list of all users who are active connected via Websocket")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of users details")}
+    )
+    @JsonView(View.class)
+    @RequestMapping(value="active/", method= RequestMethod.GET)
+    @ResponseBody UserDto[] getAllActiveUsers() {
+        UserDto[] users = this.webSocketHandler
+                .getAllActiveUsers().stream()
+                .map(usr -> new UserDto(userService.findOne(usr.getUserId()).get()))
+                .toArray(UserDto[]::new);
+        return users;
+    }
+
+    @ApiOperation(value = "Returns user details", notes = "Returns a user based on a cookie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful retrieval of user detail"),
             @ApiResponse(code = 404, message = "User with given username does not exist")}
@@ -85,13 +103,21 @@ public class UserServiceREST {
     }
 
 
+    @CrossOrigin()
     @ApiOperation(value = "Set new cookie for user", notes = "Sets a new cookie for a user with the given cookie and user id.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated user cookie details"),
             @ApiResponse(code = 404, message = "User with given user id does not exist")}
     )
     @RequestMapping(value="/", method= RequestMethod.PUT)
-    @ResponseBody void update(@RequestBody UserDto userDto) {
-        userService.setCookie(userDto);
+    @ResponseBody boolean update(@RequestBody UserDto userDto) {
+        boolean res = userService.setCookie(userDto);
+
+        if(res) {
+            webSocketHandler.updateUsers();
+            webSocketHandler.notifyUsers(WebSocketHandler.EVENT.NEW_PLAYER_LIST, "");
+        }
+
+        return res;
     }
 }

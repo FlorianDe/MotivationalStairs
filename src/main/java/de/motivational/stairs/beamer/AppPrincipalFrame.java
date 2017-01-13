@@ -89,14 +89,15 @@ public class AppPrincipalFrame implements GameEndedListener {
     public GameStartResponseDto queueGame(GameEntity game, List<UserEntity> users) {
         GameTicket ticket = new GameTicket(game, users);
 
-        GameStartResponseDto response = new GameStartResponseDto();
+        GameStartResponseDto response = new GameStartResponseDto(ticket.getGameId());
         response.setUsersBefore(this.getPlayerQueue());
         response.setTicket(ticket.getTicket());
 
         this.gameTickets.add(ticket);
 
-        this.dispatchGameQueue();
+        this.socketHandler.notifyUsers(users, WebSocketHandler.EVENT.GAME_QUEUEING, "");
 
+        this.dispatchGameQueue();
 
         this.logger.info(String.format("Creating ticket #%s for game '%s'", ticket.getTicket(), game.getName()));
         return response;
@@ -104,7 +105,6 @@ public class AppPrincipalFrame implements GameEndedListener {
 
     private void dispatchGameQueue() {
         this.logger.info("Starting redeem timer");
-
         if(this.dispatcher == null || !this.dispatcher.isAlive()) {
             this.dispatcher = createDispatcher();
             this.dispatcher.start();
@@ -117,11 +117,19 @@ public class AppPrincipalFrame implements GameEndedListener {
             public void run() {
                 try {
                     while(gameTickets.size() > 0) {
-                        socketHandler.notifyUsers(gameTickets.peek().getUsers(), WebSocketHandler.EVENT.NEXT_TICKET, "");
-                        Thread.sleep(8000);
+                        int redeemSeconds = appConfig.getGameConfig().gameRedeemSeconds;
+
                         if(currentGame == null || !currentGame.isRunning()) {
-                            logger.info(String.format("Ticket %s was not redeemed, queueing next ticket", gameTickets.peek().getTicket()));
+                            GameTicket ticket = gameTickets.peek();
+                            for(int i = 0; i < redeemSeconds; i++) {
+                                if(ticket != null)
+                                    socketHandler.notifyUsers(ticket.getUsers(), WebSocketHandler.EVENT.NEXT_TICKET, ""+(redeemSeconds-i));
+                            }
+                            Thread.sleep(redeemSeconds* 1000);
+                            logger.info(String.format("Ticket %s was not redeemed, queueing next ticket", ticket.getTicket()));
+                            socketHandler.notifyUsers(ticket.getUsers(), WebSocketHandler.EVENT.TICKET_EXPIRED, "");
                             gameTickets.poll();
+                            notifyQueueChanged();
                         } else {
                             logger.info(String.format("Game is Running, stopping redeem timer"));
                         }
@@ -141,7 +149,7 @@ public class AppPrincipalFrame implements GameEndedListener {
                 (this.currentGame == null || !this.currentGame.isRunning()) &&
                 this.gameTickets.peek().getTicket().equals(ticket)) {
             this.logger.info(String.format("Starting game with ticket %s", ticket));
-            socketHandler.notifyUsers(WebSocketHandler.EVENT.QUEUE_CHANGED, "");
+            notifyQueueChanged();
             this.startNextGame();
             return true;
         } else {
@@ -149,11 +157,20 @@ public class AppPrincipalFrame implements GameEndedListener {
         }
     }
 
+    private void notifyQueueChanged() {
+        for(GameTicket ticket: this.gameTickets) {
+            GameStartResponseDto gameStartResponseDto = new GameStartResponseDto(ticket.getGameId());
+            gameStartResponseDto.setTicket(ticket.getTicket());
+            gameStartResponseDto.setUsersBefore(getPlayerQueue(ticket.getTicket()));
+            socketHandler.notifyUsers(ticket.getUsers(), WebSocketHandler.EVENT.QUEUE_CHANGED, gameStartResponseDto);
+        }
+    }
+
     private void startNextGame() {
         GameTicket ticket = this.gameTickets.poll();
         switch(ticket.getGame().getGameId()) {
             case 1:
-                this.currentGame = new PongGame(this, ticket, appConfig);
+                this.currentGame = new PongGame(this, ticket, appConfig, socketHandler);
                 this.currentGame.setGameFrame(this.beamerFrame);
                 try {
                     this.gpioHandler.setInputHandlers(this.currentGame);
@@ -163,6 +180,7 @@ public class AppPrincipalFrame implements GameEndedListener {
                 this.swingHandler.setInputHandlers(this.currentGame, this.beamerFrame);
 
                 this.currentGame.start();
+
                 break;
         }
     }
@@ -177,8 +195,13 @@ public class AppPrincipalFrame implements GameEndedListener {
         if(results.size()>1){
             if(results.get(0).getScore()>results.get(1).getScore()){
                 gpioHandler.setAllColorLedStripLeft(Color.red);
+
+                socketHandler.notifyUserGameEnded(results.get(0).getUser(), true);
+                socketHandler.notifyUserGameEnded(results.get(1).getUser(), false);
             } else {
                 gpioHandler.setAllColorLedStripRight(Color.red);
+                socketHandler.notifyUserGameEnded(results.get(1).getUser(), true);
+                socketHandler.notifyUserGameEnded(results.get(0).getUser(), false);
             }
         }
 

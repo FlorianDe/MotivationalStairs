@@ -8,7 +8,7 @@ import de.motivational.stairs.database.entity.UserEntity;
  * Created by fdecker on 28.12.16.
  */
 public class GameDto {
-    @JsonProperty("gameId")
+    @JsonProperty("id")
     private int gameId;
 
     @JsonProperty("name")

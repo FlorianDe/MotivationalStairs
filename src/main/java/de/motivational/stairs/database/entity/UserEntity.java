@@ -53,18 +53,13 @@ public class UserEntity {
         UserEntity that = (UserEntity) o;
 
         if (userId != that.userId) return false;
-        if (cookie != null ? !cookie.equals(that.cookie) : that.cookie != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = cookie != null ? cookie.hashCode() : 0;
-        result = 31 * result + userId;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return 31 * userId;
     }
 
     @Override

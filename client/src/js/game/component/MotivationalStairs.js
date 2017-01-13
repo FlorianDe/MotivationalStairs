@@ -2,7 +2,7 @@ import React from "react";
 import AppBar from 'material-ui/AppBar';
 import Accessibility from 'material-ui/svg-icons/action/accessibility';
 
-import {Container, Row, Col} from 'react-grid-system';
+import {Container, Row} from 'react-grid-system';
 
 import {Card, CardActions, CardHeader, CardText, CardMedia, CardTitle} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -16,6 +16,11 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 
 import {List, ListItem} from 'material-ui/List';
 import LinearProgress from 'material-ui/LinearProgress';
+
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import ContentDrafts from 'material-ui/svg-icons/content/drafts';
+import Divider from 'material-ui/Divider';
 
 const styles = {
     header: {
@@ -60,39 +65,39 @@ const styles = {
 class MotivationalStairsGame extends React.Component {
 
     state = {
-        step: 0,
         expandedGame: -1,
         selectedGame: null,
-        isGameSelect: true,
+        gameModeSelect: 1,
         hintTexts: [
-            "Wählen Sie zunächst das Spiel aus, welches Sie spielen wollen, " +
-            "durch einen Klick auf den Namen erscheint eine Beschreibung",
+            "Wähle zunächst das Spiel aus, welches du spielen willst, " +
+            "durch einen Klick auf den Namen erscheint die Beschreibung Beschreibung",
 
-            "In diesem Spiel stehen Ihnen folgende Modi zur Verfügung",
+            "In diesem Spiel stehen dir folgende Modi zur Verfügung. Wähle einen Spieler, mit dem du zusammen spielen willst.",
 
-            "Sind Sie bereit? Dann begeben Sie sich auf die Treppe und starten Sie das Spiel!",
+            "Bist du bereit?? Dann begib dich auf die Treppe und starte das Spiel!",
 
-            "Sie müssen sich noch kurz gedulden es sind noch ein paar Spieler vor Ihnen dran!"
+            "Es kann sein, dass spieler vor dir dran sind, in dem Fall wird eine Liste angezeigt."
         ]
     };
 
     handleNext = (game) => {
         this.setState(
             Object.assign({}, this.state, {
-                step: this.state.step+1,
                 selectedGame: (game !== undefined)?game: this.state.selectedGame,
                 expandedGame: -1
             })
         );
+        this.props.model.API.setStep(this.props.model.step+1);
     };
 
     handlePrev = () => {
         this.setState(
             Object.assign({}, this.state, {
-                step: this.state.step-1,
+                step: this.props.model.step-1,
                 expandedGame: -1
             })
         );
+        this.props.model.API.setStep(this.props.model.step-1);
     };
 
     handleExpandChange = (id, expanded) => {
@@ -105,12 +110,8 @@ class MotivationalStairsGame extends React.Component {
     };
 
     handleMenu = (isGameSelect) => {
-        this.setState(
-            Object.assign({}, this.state, {
-                isGameSelect: !isGameSelect,
-                step: 0
-            })
-        );
+        this.props.model.API.setStep(0);
+        this.props.model.API.setGameSelect(!isGameSelect);
     };
 
     getStepNavigationComponent = () => {
@@ -118,22 +119,23 @@ class MotivationalStairsGame extends React.Component {
         <div style={{marginTop: 12}}>
             <FlatButton
                 label="Zurück"
-                disabled={this.state.step === 0}
+                disabled={this.props.model.step === 0 || this.props.model.askedPlayer !== 0}
                 onTouchTap={this.handlePrev}
                 style={{marginRight: 12}}
             />
             <RaisedButton
-                label={this.state.step === 2 ? 'Spiel starten' : 'Weiter'}
+                label={this.props.model.step === 2 ? 'Spiel starten' : 'Weiter'}
+                disabled={this.props.model.step===1 && (this.state.gameModeSelect === 0 || this.props.model.askedPlayer === 0)}
                 primary={true}
                 onTouchTap={() => {this.handleNext(this.state.selectedGame)}}
             />
         </div>)
     };
 
-    getStepComponent = (step) => {
+    getStepComponent = (step, props) => {
         switch (step) {
             case 0:
-                return this.props.games.map((game) => {
+                return this.props.model.games.map((game) => {
                     return (
                     <Card
                         key={game.id}
@@ -165,7 +167,7 @@ class MotivationalStairsGame extends React.Component {
                                 />
                             }
                         >
-                            <img src={game.image} />
+                            <img role="presentation" src={game.imagePath} />
                         </CardMedia>
                     </Card>);
                 });
@@ -174,17 +176,46 @@ class MotivationalStairsGame extends React.Component {
                     <div style={styles.gameNavigation}>
                         <RadioButtonGroup
                             name="modeSelect"
+                            valueSelected={this.state.gameModeSelect}
+                            onChange={(evt, val) => { this.setState(Object.assign({}, this.state, { gameModeSelect: val }))}}
                         >
                             {
-                                this.state.selectedGame.gameModi.map((mode) => {
+                                this.state.selectedGame.gameModes.map((mode, index) => {
                                     return <RadioButton
-                                        key={mode}
-                                        value={mode}
+                                        key={index}
+                                        value={index}
                                         label={mode}
                                     />
                                 })
                             }
                         </RadioButtonGroup>
+                        <Row>
+                            <h3 style={ {marginLeft: "20px"} } >Aktive Spieler:</h3>
+                        </Row>
+                        <List>
+                            {
+                                props.model.opponents.map((player) => {
+                                    if(player.id !== props.model.user.id) {
+                                        return (
+                                            <div key={player.id}>
+                                                <ListItem
+                                                    primaryText={player.name}
+                                                    onTouchTap={function() {
+                                                        props.model.API.askOpponentForPlay(player.id);
+                                                    }}
+                                                    disabled={player.asked === -2}
+                                                    rightIcon={(player.asked === -2)?<ContentDrafts />:undefined}
+                                                />
+                                                <Divider/>
+                                            </div>
+
+                                        );
+                                    } else {
+                                        return "";
+                                    }
+                                })
+                            }
+                        </List>
                     { this.getStepNavigationComponent() }
                     </div>);
             case 2:
@@ -192,36 +223,136 @@ class MotivationalStairsGame extends React.Component {
                         { this.getStepNavigationComponent() }
                     </div>;
             case 3:
-                return (
+                return props.model.queue.length>0?(
                     <div>
-                        <LinearProgress mode="determinate" value={30}/>
+                        <LinearProgress mode="determinate" value={(((props.model.gameTicket !== null)?props.model.gameTicket.usersBefore.length:0) / props.model.queue.length) * 100}/>
                         <Paper style={styles.paper} zDepth={1}>
                             <List>
-                                <ListItem primaryText="Martin" />
-                                <ListItem primaryText="Kevin" />
-                                <ListItem primaryText="Peter" />
-                                <ListItem primaryText="Johannes" />
+                                {
+                                    (props.model.gameTicket !== null)?props.model.gameTicket.usersBefore.map((users) => {
+                                        return(
+                                            <ListItem primaryText={users}/>
+                                        );
+                                    }):""
+                                }
                             </List>
                         </Paper>
                     </div>
-                );
+                ):undefined;
             default:
                 return "";
         }
     };
 
+    getPlayRequestDialogComponent = (model) => {
+        if(model.playRequest) {
+            return (
+                <Dialog
+                    title={model.playRequest.user.name + " fragt"}
+                    modal={false}
+                    actions={[
+                        <FlatButton
+                            label="Nein"
+                            primary={true}
+                            onTouchTap={function() {
+                                model.API.answerPlayRequest(false);
+                            }}
+                        />,
+                        <FlatButton
+                            label="Ja"
+                            primary={true}
+                            onTouchTap={function() {
+                                model.API.answerPlayRequest(true);
+                            }}
+                            keyboardFocused={true}
+                        />
+                    ]}
+                    open={model.playRequest.state}
+                >
+                    Wollen wir zusammen Pong spielen?
+                </Dialog>);
+        } else {
+            return "";
+        }
+    };
+
+    getNotificationDialogComponent = (model) => {
+        if(model.notification) {
+            return (
+                <Dialog
+                    title={model.notification.message}
+                    modal={false}
+                    actions={[
+                        <FlatButton
+                            label="Ok"
+                            primary={true}
+                            onTouchTap={function() {
+                                model.API.dismissNotification(true);
+                            }}
+                        />
+                    ]}
+                    open={model.notification.state}
+                    onRequestClose={function() {
+                        model.API.dismissNotification(false);
+                    }}
+                >
+                    { model.notification.detail }
+                </Dialog>
+            );
+        }
+    };
+
+    getChangeUserNameDialogComponent = (model) => {
+        if(model.changeUserName) {
+            return (
+                <Dialog
+                    title="Benutzernamen ändern"
+                    modal={false}
+                    actions={[
+                        <FlatButton
+                            label="Abbrechen"
+                            primary={true}
+                            onTouchTap={() => {
+                                model.API.closeUserNameDialog();
+                            }}
+                        />,
+                        <FlatButton
+                            label="Speichern"
+                            primary={true}
+                            onTouchTap={() => {
+                                model.API.saveNewUserName();
+                            }}
+                            disabled={model.user.name.length===0}
+                        />
+                    ]}
+                    open={model.changeUserName}
+                >
+                    <TextField
+                        floatingLabelText="Gib deinen Namen ein"
+                        fullWidth={true}
+                        errorText={(model.user.name.length>0)?"":"Der Name darf nicht leer sein"}
+                        value={model.user.name}
+                        onChange={(e) => { model.API.setNewUserName(e.target.value); }}
+                    />
+                </Dialog>
+            );
+        }
+    };
+
     render() {
+        const model = this.props.model;
         return (
         <div>
             <div style={styles.appBar}>
                 <AppBar
-
-                    title="MoSt"
-                    iconElementLeft={<Accessibility style={styles.header}/>}
+                    title={this.props.model.user.name}
+                    onTitleTouchTap={() => { model.API.openUserNameDialog(); }}
+                    showMenuIconButton={false}
+                    titleStyle={{fontSize: "17px", fontWeight: 100}}
                     iconElementRight={
                         <div>
                         {
-                            (this.state.isGameSelect)?
+                            (this.props.model.isGameSelect)?
                                 <div>
                                     <RaisedButton
                                         disabled={true}
@@ -248,10 +379,10 @@ class MotivationalStairsGame extends React.Component {
                     }
                 />
                 {
-                    (this.state.isGameSelect)?
+                    (this.props.model.isGameSelect)?
                         <Paper zDepth={3}>
                             <Stepper
-                                activeStep={this.state.step}
+                                activeStep={this.props.model.step}
                             >
                                 <Step>
                                     <StepLabel>Spiel</StepLabel>
@@ -269,20 +400,20 @@ class MotivationalStairsGame extends React.Component {
                 }
             </div>
             {
-                (this.state.isGameSelect)?
+                (this.props.model.isGameSelect)?
                     <Container style={styles.content}>
                         <Row>
                             {
                                 (this.state.expandedGame === -1)?
                                     <Paper style={styles.paper} zDepth={2}>
-                                        {this.state.hintTexts[this.state.step]}
+                                        {this.state.hintTexts[this.props.model.step]}
                                     </Paper>
                                     :
                                     ""
                             }
                         </Row>
                         <Row>
-                            { this.getStepComponent(this.state.step) }
+                            { this.getStepComponent(this.props.model.step, this.props) }
                         </Row>
                     </Container>
                 :
@@ -309,16 +440,16 @@ class MotivationalStairsGame extends React.Component {
                                 adjustForCheckbox={false}
                             >
                                 {
-                                    this.props.highScores.map(((score,id) => {
+                                    this.props.model.highscores.map(((score,id) => {
                                         var rowStyle = {};
-                                        if(id == 5) {
+                                        if(score.userId === this.props.model.user.id) {
                                             rowStyle.backgroundColor = "#76d1ff";
                                             rowStyle.borderBottom = "1px solid rgb(101, 180, 247)";
                                         }
-                                       return <TableRow key={score.user.id} style={rowStyle}>
-                                           <TableRowColumn style={{width: 35}}>{score.score}</TableRowColumn>
-                                           <TableRowColumn>{score.user.name}</TableRowColumn>
-                                           <TableRowColumn style={{width: 68}}>{score.date}</TableRowColumn>
+                                       return <TableRow key={score.userId} style={rowStyle}>
+                                           <TableRowColumn style={{width: 35}}>{score.highscore}</TableRowColumn>
+                                           <TableRowColumn>{score.userName}</TableRowColumn>
+                                           <TableRowColumn style={{width: 68}}>{new Date(score.created).toLocaleDateString()}</TableRowColumn>
                                        </TableRow>
                                     }))
                                 }
@@ -326,9 +457,15 @@ class MotivationalStairsGame extends React.Component {
                         </Table>
                     </Container>
             }
-
+            <div>
+                { this.getPlayRequestDialogComponent(this.props.model) }
+                { this.getNotificationDialogComponent(this.props.model) }
+                { this.getChangeUserNameDialogComponent(this.props.model) }
+            </div>
         </div>);
     }
+
+
 }
 
 export default MotivationalStairsGame;

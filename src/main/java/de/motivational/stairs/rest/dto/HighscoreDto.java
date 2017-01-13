@@ -3,6 +3,7 @@ package de.motivational.stairs.rest.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.motivational.stairs.database.entity.HighscoreEntity;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by fdecker on 28.12.16.
@@ -49,6 +50,42 @@ public class HighscoreDto {
         }
         if(userName!=null) {
             this.userName = userName;
+        }
+    }
+
+    public HighscoreDto(Long highscore, Integer gameId, Integer userId, String userName, Date created) {
+        if(highscore!=null) {
+            this.highscore = highscore;
+        }
+        if(gameId!=null) {
+            this.gameId = gameId;
+        }
+        if(userName!=null) {
+            this.userName = userName;
+        }
+
+        if(userId != null) {
+            this.userId = userId;
+        }
+
+        if(created != null) {
+            this.created = new Timestamp(created.getTime());
+        }
+    }
+
+    public HighscoreDto(Long highscore, Integer gameId, Integer userId, String userName) {
+        if(highscore!=null) {
+            this.highscore = highscore;
+        }
+        if(gameId!=null) {
+            this.gameId = gameId;
+        }
+        if(userName!=null) {
+            this.userName = userName;
+        }
+
+        if(userId != null) {
+            this.userId = userId;
         }
     }
 

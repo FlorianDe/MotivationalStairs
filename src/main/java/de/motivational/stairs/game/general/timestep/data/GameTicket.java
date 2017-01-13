@@ -8,20 +8,24 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by viktorspadi on 29.12.16.
  */
 public class GameTicket {
 
+    private static AtomicInteger internalIdCounter = new AtomicInteger();
     private final String ticket;
     private final GameEntity game;
     private final List<UserEntity> users;
+    private final int gameId;
 
     public GameTicket(String ticketId) {
         this.ticket = ticketId;
         this.game = null;
         this.users = null;
+        this.gameId = -1;
     }
 
     public GameTicket(GameEntity game, List<UserEntity> users) {
@@ -46,6 +50,7 @@ public class GameTicket {
             e.printStackTrace();
         }
         this.ticket = t;
+        this.gameId = GameTicket.internalIdCounter.incrementAndGet();
     }
 
     public String getTicket() {
@@ -60,18 +65,22 @@ public class GameTicket {
         return users;
     }
 
+    public int getGameId() {
+        return gameId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         GameTicket that = (GameTicket) o;
-
         return ticket.equals(that.ticket);
     }
 
     @Override
     public int hashCode() {
-        return ticket.hashCode();
+        int result = ticket.hashCode();
+        return result;
     }
 }
